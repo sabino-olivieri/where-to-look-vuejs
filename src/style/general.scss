@@ -1,2 +1,24 @@
 @import "bootstrap/scss/bootstrap";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "./partials/navbar";
+
+:root {
+    color-scheme: light dark;
+    --body-background: #1f1f1f;
+    --color-body: #f2f2f2;
+}
+
+body {
+    background-color: var(--body-background);
+    color: var(--color-body);
+    font-family: poppins;
+    font-size: 1.11rem;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --body-background: #f2f2f2;
+        --color-body: #1f1f1f;
+    }
+}
+
