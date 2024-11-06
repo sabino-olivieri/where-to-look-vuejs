@@ -1,5 +1,5 @@
 <template>
-    <div class="carousel-container mb-4">
+    <div class="carousel-container mb-4" >
         <swiper 
             :modules="[SwiperNavigation, SwiperPagination, SwiperAutoplay, SwiperEffectFade]" 
             :slides-per-view="1" 
@@ -42,7 +42,7 @@ import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';  // Importante: aggiungere questo import
+import 'swiper/css/effect-fade';
 import { store } from '../store';
 
 export default {
@@ -56,7 +56,7 @@ export default {
             SwiperNavigation: Navigation,
             SwiperPagination: Pagination,
             SwiperAutoplay: Autoplay,
-            SwiperEffectFade: EffectFade,  // Aggiungi il modulo fade
+            SwiperEffectFade: EffectFade,
             store,
             slides: store.show,
             activeIndex: 0

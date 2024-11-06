@@ -1,6 +1,6 @@
 <template>
     <div class="search-container">
-        <input type="text" v-model="searchTerm" placeholder="Cerca..." class="search-input" @keypress.enter="submitSearch" />
+        <input type="text" v-model.trim="searchTerm" placeholder="Cerca..." class="search-input" @keypress.enter="submitSearch" />
         <button @click="submitSearch" class="search-button">
             <i class="fas fa-search"></i>
         </button>
@@ -17,7 +17,10 @@ export default {
     methods: {
         submitSearch() {
             
-            console.log('Searching for:', this.searchTerm);
+            this.$router.push({
+                name: 'search',
+                query: {title: this.searchTerm}
+            })
             this.searchTerm = '';
         },
     },

@@ -35,7 +35,7 @@
             }" class="mySwiper rounded-3">
             <swiper-slide v-for="(slide, index) in slides.shows" :key="index">
                 <router-link :to="{name: 'details', params: {id: slide.tmdbId}}">
-                <div class="slide-content" @click="detailsCahnge(index)">
+                <div class="slide-content" @click="detailsCahnge(slide)">
                     <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title" class="slide-image rounded-3">
                     <div class="slide-caption rounded-3">
                         <h6 class="mb-3">{{ slide.title }}</h6>
@@ -70,7 +70,8 @@ export default {
         SwiperSlide,
     },
     props: {
-        title: String
+        title: String,
+        slides: Object
     },
     data() {
     return {
@@ -80,17 +81,18 @@ export default {
         Virtual,
         EffectFade,
         store,
-        slides: store.show,
+
         activeIndex: 0
     }
 },
+
     methods: {
         handleSlideChange(swiper) {
             this.activeIndex = swiper.realIndex;
         },
         
-        detailsCahnge(index) {
-            store.details = this.slides.shows[index]
+        detailsCahnge(slide) {
+            store.details = slide;
             console.log(store.details);
             
         }

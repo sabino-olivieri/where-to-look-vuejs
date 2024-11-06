@@ -1,17 +1,17 @@
 <template>
-    <main  v-if="store.details">
-        
-        <hero class="hero position-relative">
+    <main v-if="store.details && store.italianDetails">
+
+        <div class="hero position-relative">
 
             <div class="ms_img">
                 <img :src="store.details.imageSet.horizontalPoster.w720" alt="" class=" img-fluid">
             </div>
 
             <div class="ms_title p-3">
-                <h1 class="m-0">{{ store.italianDetails.title ?? store.italianDetails.name}}</h1>
+                <h1 class="m-0">{{ store.italianDetails.title ?? store.italianDetails.name }}</h1>
             </div>
 
-        </hero>
+        </div>
 
         <!-- descrizione -->
         <div class="container my-3" v-if="store.italianDetails.overview != ''">
@@ -21,38 +21,22 @@
         </div>
 
         <div class="container my-3 rounded-3 border border-2 border-warning">
-            <div class="row">
+            <div class="row" v-if="exsist">
+
+                <!-- free -->
+                <ServicesView :title="'gratuito'" :arrStream="free" />
 
                 <!-- subsctiption -->
-                <div class="col-12 p-3 d-flex gap-3 align-items-center" v-if="subscription.length > 0">
-                    <span class="label p-1 rounded-3 bg-warning">abbonamento</span>
-
-                    <div class="logos rounded-3 p-1" v-for="stream in subscription" :key="stream" :style="{backgroundColor: stream.service.themeColorCode }">
-                                    <img :src="stream.service.imageSet.whiteImage" class="" alt="">
-    
-                    </div>
-                </div>
+                <ServicesView :title="'abbonamento'" :arrStream="subscription" />
 
                 <!-- buy -->
-                <div class="col-12 p-3 d-flex gap-3 align-items-center" v-if="buy.length > 0">
-                    <span class="label p-1 rounded-3 bg-warning">acquista</span>
-
-                    <div class="logos rounded-3 p-1" v-for="stream in buy" :key="stream" :style="{backgroundColor: stream.service.themeColorCode }">
-                                    <img :src="stream.service.imageSet.whiteImage" class="" alt="">
-                                    <span class="price">{{ stream.quality }} {{ stream.price.amount }}€</span>
-                    </div>
-                </div>
+                <ServicesView :title="'acquista'" :arrStream="buy" />
 
                 <!-- rent -->
-                <div class="col-12 p-3 d-flex gap-3 align-items-center" v-if="rent.length > 0">
-                    <span class="label p-1 rounded-3 bg-warning">noleggia</span>
-
-                    <div class="logos rounded-3 p-1" v-for="stream in buy" :key="stream" :style="{backgroundColor: stream.service.themeColorCode }">
-                                    <img :src="stream.service.imageSet.whiteImage" class="" alt="">
-                                    <span class="price">{{ stream.quality }} {{ stream.price.amount }}€</span>
-                    </div>
-                </div>
+                <ServicesView :title="'noleggia'" :arrStream="rent" />
             </div>
+
+            <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
         </div>
 
 
@@ -64,16 +48,20 @@
 </template>
 
 <script>
+import ServicesView from '../components/ServicesView.vue';
 import CallApi from '../functions/CallApi';
 import { store } from '../store';
 
 export default {
+    components: { ServicesView },
     data() {
         return {
             store,
+            free: [],
             subscription: [],
             rent: [],
             buy: [],
+            exsist: false
 
 
         }
@@ -84,59 +72,120 @@ export default {
         console.log(id);
 
 
-
+        // movieofthenight
         if (!store.details) {
-            // console.log('non esiste');
 
-            // store.details = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
-            //     country: 'it'
-            // })            
+            store.details = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
+                country: 'it'
+            })
 
         }
 
-            // store.italianDetails = await CallApi(`https://api.themoviedb.org/3/${id}`, {}, {
-            //     'api_key': '524981c982f2f9eac53799da92481683',
-            //     'language': 'it-IT',
-            // })
+        // themoviedb
+        if (!store.italianDetails) {
 
-            // console.log(store.italianDetails);
+            store.italianDetails = await CallApi(`https://api.themoviedb.org/3/${id}`, {}, {
+                language: 'it-IT',
+                api_key: import.meta.env.VITE_KEY_MOVIEDB
+            })
 
-            await store.details.streamingOptions.it.forEach(service => {
-                switch (service.type) {
-                    case "subscription":
-                        this.pushSub(service);
-                        break;
-                
-                    case "buy":
-                        this.buy.push(service);
-                        break;
 
-                    case "rent":
-                        this.rent.push(service);
-                        break;
+        }
 
-                    default:
-                        break;
-                }
-            });
-            
-            
+        await store.details.streamingOptions.it.forEach(service => {
+            switch (service.type) {
+
+                case "subscription":
+                    this.pushSub(service);
+                    this.exsist = true;
+                    break;
+
+                case "buy":
+                    this.buy.push(service);
+                    this.exsist = true;
+                    break;
+
+                case "rent":
+                    this.rent.push(service);
+                    this.exsist = true;
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+        const stream = await CallApi(`https://api.themoviedb.org/3/${id.split("/")[0]}/${store.italianDetails.id}/watch/providers`, {}, {
+            language: 'it-IT',
+            api_key: import.meta.env.VITE_KEY_MOVIEDB
+        })
+
+        
+        const streamTypes = {
+            ads: this.free,
+            buy: this.buy,
+            rent: this.rent,
+            flatrate: this.subscription
+        };
+
+        Object.entries(streamTypes).forEach(([type, targetArray]) => {
+            if (stream.results.IT && stream.results.IT[type]) {
+                stream.results.IT[type].forEach(service => {
+                    if (!this.isServiceInArray(service, targetArray)) {
+                        const additionalFields = type === 'buy' || type === 'rent'
+                            ? { type: "", quality: "", price: { amount: "" } }
+                            : {};
+
+                        targetArray.push(this.createServiceObject(service, additionalFields));
+                    }
+                });
+            }
+        });
+
+
     },
     beforeUnmount() {
         store.details = null;
+        store.italianDetails = null;
         console.log(store.details);
         this.subscription = [];
         this.rent = [];
         this.buy = [];
+        this.exsist = false;
 
     },
     methods: {
         pushSub(service) {
             const exsist = this.subscription.some(obj => obj.id === service.id);
 
-            if(!exsist) {
+            if (!exsist) {
                 this.subscription.push(service);
             }
+        },
+        isServiceInArray(service, array) {
+
+            return array.some((item) => {
+                const { name } = item.service;
+                const providerName = service.provider_name;
+
+                if ((name === 'Prime Video' && (providerName === 'Amazon Video' || providerName === 'Amazon Prime Video')) ||
+                    (name === 'Disney+' && providerName === 'Disney Plus')) {
+                    return true;
+                }
+
+                return name === providerName;
+            });
+        },
+        createServiceObject(service, additionalFields = {}) {
+            return {
+                service: {
+                    id: service.provider_id,
+                    imageSet: {
+                        whiteImage: `https://image.tmdb.org/t/p/original${service.logo_path}`
+                    }
+                },
+                ...additionalFields
+            };
         }
     }
 }
@@ -167,31 +216,4 @@ export default {
     align-items: end;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #1f1f1f 100%);
 }
-
-.label {
-    display: inline-block;
-    writing-mode:vertical-lr;
-    transform: rotate(180deg);
-    font-weight: 700;
-    text-transform: uppercase;
-    // font-size: 14px;
-    color: #1f1f1f;
-}
-
-.logos {
-    width: 80px;
-    aspect-ratio: 1/1;
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .price {
-        font-size: 10px;
-    }
-}
-
-@media screen {}
 </style>
