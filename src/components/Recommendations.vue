@@ -1,10 +1,10 @@
 <template>
-    <div class="carousel-container mb-4 px-3" v-if="slides">
+    <div class="carousel-container my-5 px-3" v-if="slides && slides.results.length > 0">
         <h2 class="">{{ title }}</h2>
         <swiper :modules="[Navigation, Autoplay, Virtual, EffectFade]" :breakpoints="{
             // mobile (default)
             320: {
-                slidesPerView: 1,
+                slidesPerView: 1.5,
                 spaceBetween: 15
             },
             640: {
@@ -33,28 +33,18 @@
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true
             }" class="mySwiper rounded-3">
-            <swiper-slide v-for="(slide, index) in slides.shows" :key="index">
-                <router-link :to="{name: 'details', params: {id: slide.tmdbId}}">
+
+            <swiper-slide v-for="(slide, index) in slides.results" :key="index">
+                <router-link :to="{name: 'details', params: {id: `${slide.media_type}/${slide.id}`}}">
                 <div class="slide-content" @click="detailsCahnge(slide)">
-                    <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title" class="slide-image rounded-3">
+                    <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3">
                     <div class="slide-caption rounded-3">
-                        <h6 class="mb-3">{{ slide.title }}</h6>
-
-                        <div class="d-flex gap-2">
-
-                            <div class="logos d-flex align-items-center rounded-3 p-1" v-for="stream in slide.streamingOptions.it" :key="stream" :style="{backgroundColor: stream.service.themeColorCode }">
-                                    <img :src="stream.service.imageSet.whiteImage" class=" img-fluid" alt="">
-                            </div>
-                        </div>
+                        <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
                     </div>
                 </div>
             </router-link>
             </swiper-slide>
         </swiper>
-    </div>
-
-    <div class="my-5 py-4 d-flex justify-content-center align-items-center" v-else>
-        <Loader/>
     </div>
 </template>
 
@@ -66,14 +56,12 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';  // Importante: aggiungere questo import
 import { store } from '../store';
-import Loader from './Loader.vue';
 
 export default {
     name: 'SwiperCarousel',
     components: {
         Swiper,
         SwiperSlide,
-        Loader,
     },
     props: {
         title: String,
@@ -92,16 +80,39 @@ export default {
     }
 },
 
+created() {
+    console.log(this.slides, 'slides');
+    
+},
+
     methods: {
         handleSlideChange(swiper) {
             this.activeIndex = swiper.realIndex;
         },
         
         detailsCahnge(slide) {
-            store.details = slide;
-            console.log(store.details);
-            
-        }
+            store.italianDetails = slide;
+            window.scrollTo({
+                top: 0,
+                behavoir: 'smooth'
+            })
+            store.details = null;
+        },
+        getImagePath(img) {
+            if(img.backdrop_path) {
+                
+                return new URL("https://image.tmdb.org/t/p/w342" + img.backdrop_path, import.meta.url).href;
+
+            } else if(img.poster_path) {
+                
+                return new URL("https://image.tmdb.org/t/p/w342" + img.poster_path, import.meta.url).href;
+
+            } else {
+                console.log(`https://placehold.co/600x400?text=${img.title}`);
+                
+                return `https://placehold.co/600x400?text=${img.title}`;
+            }
+        },
 
     }
 }
@@ -121,7 +132,12 @@ export default {
     transition: all 0.5s;
     &:hover {
         .slide-caption {
-            animation: slideUp 0.8s ease forwards;
+            height: auto;
+
+            h6 {
+                text-overflow: unset;
+                white-space: unset;
+            }
         }
     }
 }
@@ -137,16 +153,17 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    opacity: 0;
-    height: 100%;
-    // transform: translateY(200px);
-    background: rgba(0, 0, 0, 0.597);
+
+    transition: height 0.5s ease;
+    background: rgba(0, 0, 0, 0.838);
     color: white;
     padding: 10px;
-    transition: all 5s ease;
 
     h6 {
         font-size: 18px;
+        text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
     }
 }
 
@@ -158,17 +175,6 @@ export default {
     aspect-ratio: 1/1;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(200px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 :deep(.swiper-button-next),
 :deep(.swiper-button-prev) {

@@ -48,8 +48,7 @@ export default {
 }
 
 .search-button {
-    background-color: #7b68ee;
-    color: #fff;
+    background-color: rgb(255 193 7);
     border: none;
     border-radius: 50%;
     width: 26px;
@@ -62,7 +61,8 @@ export default {
 }
 
 .search-button:hover {
-    background-color: #6a51d1;
+    background-color: rgb(188, 141, 0);
+
 }
 
 .search-button i {

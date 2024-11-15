@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top" :class="{ 'navbar-scrolled': isScrolled }">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <img src="../assets/wheretolook.png" class="logo" alt="">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,8 @@
 
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <router-link :to="{ name: 'home' }" class="nav-link active" aria-current="page"
+                                href="#">Home</router-link>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Features</a>
@@ -23,20 +24,20 @@
                             <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
-    
-                    <SearchBar/>
+
+                    <SearchBar />
                 </div>
-                
-                </div>
+
+            </div>
         </div>
-        
+
     </nav>
 </template>
 
 <script>
 import SearchBar from './SearchBar.vue';
 export default {
-  components: { SearchBar },
+    components: { SearchBar },
     data() {
         return {
             isScrolled: false
@@ -57,5 +58,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.logo {
+    width: 50px;
+    filter: drop-shadow(1px 1px 0px white)
+}
 
+.nav-item {
+    position: relative;
+
+    &::after {
+        position: absolute;
+
+        content: '';
+        display: inline-block;
+        width: 0%;
+        height: 2px;
+        background-color: yellow;
+        transition: all 0.5s ease;
+    }
+
+    &:hover {
+        &::after {
+            width: 100%;
+        }
+    }
+
+}
 </style>

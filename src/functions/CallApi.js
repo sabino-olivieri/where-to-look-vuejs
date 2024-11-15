@@ -24,14 +24,13 @@ export default async function CallApi(link, objHeader, objParams) {
                 });
                 
                 data = response.data;
-                console.log(data);
                 return data;
             } catch (err) {
                 attempts += 1;
-                console.log(`Tentativo ${attempts} fallito:`, err);
+                // console.log(`Tentativo ${attempts} fallito:`, err);
 
                 if (attempts >= maxRetries) {
-                    console.log("Numero massimo di tentativi raggiunto. Chiamata fallita.");
+                    // console.log("Numero massimo di tentativi raggiunto. Chiamata fallita.");
                 }
             }
         } else {
