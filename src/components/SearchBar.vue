@@ -35,6 +35,7 @@ export default {
     border: 2px solid #f1f1f1;
     border-radius: 20px;
     padding: 5px 12px;
+    max-width: 250px;
 }
 
 .search-input {

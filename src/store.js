@@ -14,6 +14,7 @@ export const store = reactive ({
         'x-rapidapi-host': 'streaming-availability.p.rapidapi.com',
         'x-rapidapi-key': import.meta.env.VITE_KEY_PPROVIDER
     },
+    season: null
 
     
 })

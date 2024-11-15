@@ -26,8 +26,8 @@
 
         <div class="container">
 
-            <div class="container  rounded-3 border border-2 border-warning">
-                <div class="row" v-if="exsist">
+            <div class="container my-3 rounded-3 border border-2 border-warning">
+                <div v-if="exsist">
 
                     <!-- free -->
                     <ServicesView :title="'gratuito'" :arrStream="free" />
@@ -44,6 +44,9 @@
 
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
             </div>
+
+            <Seasons v-if="store.italianDetails.seasons"/>
+
         </div>
 
         <Recommendations :title="'Suggeriti'" :slides="suggested" />
@@ -58,13 +61,14 @@
 
 <script>
 import Recommendations from '../components/Recommendations.vue';
+import Seasons from '../components/Seasons.vue';
 import ServicesView from '../components/ServicesView.vue';
 import CallApi from '../functions/CallApi';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 
 export default {
-    components: { ServicesView, Recommendations },
+    components: { ServicesView, Recommendations, Seasons },
     data() {
         return {
             store,
@@ -167,7 +171,6 @@ export default {
                 })
 
                 if (store.details.length === 0) {
-                    console.log('Ent');
 
                     store.details = await TransformObject(store.italianDetails);
                 }
@@ -205,6 +208,8 @@ export default {
                 language: 'it-IT',
                 api_key: import.meta.env.VITE_KEY_MOVIEDB
             })
+            console.log(stream);
+            
 
 
             const streamTypes = {
