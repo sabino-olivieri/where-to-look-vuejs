@@ -28,7 +28,7 @@
         <div class="container">
 
             <div class="container my-3 rounded-3 border border-2 border-warning">
-                <div v-if="exsist">
+                <div class="text-end" v-if="exsist">
 
                     <!-- free -->
                     <ServicesView :title="'gratuito'" :arrStream="free" />
@@ -41,6 +41,8 @@
 
                     <!-- rent -->
                     <ServicesView :title="'noleggia'" :arrStream="rent" />
+                    
+                    <span class=" align-content-end">Powered by JustWatch</span>
                 </div>
 
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
