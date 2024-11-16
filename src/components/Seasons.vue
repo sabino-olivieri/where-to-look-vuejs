@@ -158,6 +158,7 @@ export default {
         z-index: 10;
     }
 
+
     .accordion {
         --bs-accordion-bg: transparent;
         --bs-accordion-color: var(--color-body);

@@ -1,8 +1,8 @@
 <template>
 
-  <BigCarousel :slides="store.show" />
-  <MovieCarousel title="Film" :slides="store.movies" />
-  <MovieCarousel title="Serie" :slides="store.series" />
+  <BigCarousel :slides="store.show" v-if="store.show.shows" />
+  <MovieCarousel title="Film" :slides="store.movies"  v-if="store.movies.shows"/>
+  <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows"/>
 
 </template>
 
@@ -28,42 +28,46 @@ export default {
       'order_by': 'popularity_1week',
     };
 
-    if (!store.show) {
+    if (!store.show.shows) {
 
-      store.show = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, params);
-
-
-      if (store.show.length === 0) {
-        await this.CallDefault('all',store.show)
+      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, params);
+      if(resp) {
+        store.show = resp;
+      } else if (!store.show.shows) {
+        await this.CallDefault('all', store.show)
         
       }
 
 
     }
 
-    if (!store.movies) {
+    if (!store.movies.shows) {
 
-      store.movies = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
+      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
         'country': 'it',
         'order_by': 'popularity_1week',
         'show_type': 'movie'
       });
 
-      if (store.movies.length === 0) {
-        await this.CallDefault('movie',store.movies)
+      if(resp) {
+        store.movies = resp;
+      } else if (!store.movies.shows) {
+        await this.CallDefault('movie', store.movies)
         
       }
     }
 
-    if (!store.series) {
+    if (!store.series.shows) {
 
-      store.series = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
+      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
         'country': 'it',
         'order_by': 'popularity_1week',
         'show_type': 'series'
       });
 
-      if (store.series.length === 0) {
+      if(resp) {
+        store.series = resp;
+      } else if (!store.series.shows) {
         await this.CallDefault('tv',store.series)
         
       }
@@ -71,7 +75,7 @@ export default {
     }
   },
   methods: {
-    async CallDefault(search,storeArray) {
+    async CallDefault(search, storeArray) {
       const resp = await CallApi(`https://api.themoviedb.org/3/trending/${search}/week`, {}, {
     language: 'it-IT',
     api_key: import.meta.env.VITE_KEY_MOVIEDB
@@ -82,8 +86,9 @@ export default {
       return await TransformObject(elem);
     })
   );
-
+    
   storeArray.shows = array;
+  
     }
   }
 

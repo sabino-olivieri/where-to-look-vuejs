@@ -1,66 +1,81 @@
 <template>
-    <div class="carousel-container mb-4 px-3" v-if="slides">
+    <div class="carousel-container mb-4 px-3" v-if="slides.shows">
         <h2 class="">{{ title }}</h2>
         <swiper :modules="[Navigation, Autoplay, Virtual, EffectFade]" :breakpoints="{
             // mobile (default)
             320: {
-                slidesPerView: 1,
+                slidesPerView: 1.2,
                 spaceBetween: 15
             },
             640: {
-                slidesPerView: 2.5,
+                slidesPerView: 2.2,
 
             },
             // tablet
             768: {
-                slidesPerView: 3.5,
+                slidesPerView: 3.2,
 
             },
             // desktop
             1024: {
-                slidesPerView: 4.5,
+                slidesPerView: 4.2,
 
             },
 
             1440: {
-                slidesPerView: 6.5,
+                slidesPerView: 6.2,
 
             }
 
-        }" :virtual="true"  :lazy="true" :watchSlidesProgress="true" :space-between="15"
-            :loop="false" :navigation="true" @slideChangeTransitionEnd="handleSlideChange" :autoplay="{
+        }" :virtual="true" :lazy="true" :watchSlidesProgress="true" :space-between="15" :loop="false"
+            :navigation="true" :autoplay="{
                 delay: 10000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true
             }" class="mySwiper rounded-3">
             <swiper-slide v-for="(slide, index) in slides.shows" :key="index">
-                <router-link :to="{name: 'details', params: {id: slide.tmdbId}}">
-                <div class="slide-content" @click="detailsCahnge(slide)">
-                    <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title" class="slide-image rounded-3">
-                    <div class="slide-caption rounded-3">
-                        <h6 class="mb-3">{{ slide.title }}</h6>
+                <router-link :to="{ name: 'details', params: { id: slide.tmdbId } }">
+                    <div class="slide-content" @click="detailsCahnge(slide)">
 
-                        <div class="d-flex gap-2">
+                        <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title"
+                            class="slide-image rounded-3" v-show="slideIndex[index]" @load="handleImageLoad(index)">
 
-                            <div class="logos d-flex align-items-center rounded-3 p-1" v-for="stream in slide.streamingOptions.it" :key="stream" :style="{backgroundColor: stream.service.themeColorCode }">
-                                    <img :src="stream.service.imageSet.whiteImage" class=" img-fluid" alt="">
+
+                        <div class="slide-image d-flex justify-content-center align-items-center"
+                            v-if="!slideIndex[index]">
+                            <Loader />
+                        </div>
+
+                        <div class="slide-caption rounded-3">
+                            <h6 class="mb-3">{{ slide.title }}</h6>
+
+                            <div class="d-flex gap-2">
+
+                                <div class="logos d-flex align-items-center rounded-3 p-1"
+                                    v-for="stream in slide.streamingOptions.it" :key="stream"
+                                    :style="{ backgroundColor: stream.service.themeColorCode }">
+
+                                    <img :src="stream.service.imageSet.whiteImage" class="" alt="">
+
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
-                </div>
-            </router-link>
+                </router-link>
             </swiper-slide>
         </swiper>
     </div>
 
     <div class="my-5 py-4 d-flex justify-content-center align-items-center" v-else>
-        <Loader/>
+        <Loader />
     </div>
 </template>
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Navigation, Pagination, Autoplay, Virtual, EffectFade  } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, Virtual, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -80,27 +95,35 @@ export default {
         slides: Object
     },
     data() {
-    return {
-        Navigation,  // Usa direttamente i moduli importati
-        Pagination,
-        Autoplay,
-        Virtual,
-        EffectFade,
-        store,
+        return {
+            Navigation,  // Usa direttamente i moduli importati
+            Pagination,
+            Autoplay,
+            Virtual,
+            EffectFade,
+            store,
+            slideIndex: []
+        }
+    },
+    created() {
+        if (this.slides.shows) {
+            console.log(this.slides.shows);
 
-        activeIndex: 0
-    }
-},
+            this.slides.shows.forEach(element => {
+                this.slideIndex.push(false)
+            });
+        }
+    },
 
     methods: {
-        handleSlideChange(swiper) {
-            this.activeIndex = swiper.realIndex;
-        },
-        
+
         detailsCahnge(slide) {
             store.details = slide;
             console.log(store.details);
-            
+
+        },
+        handleImageLoad(index) {
+            this.slideIndex[index] = true;
         }
 
     }
@@ -119,6 +142,7 @@ export default {
 .slide-content {
     position: relative;
     transition: all 0.5s;
+
     &:hover {
         .slide-caption {
             animation: slideUp 0.8s ease forwards;

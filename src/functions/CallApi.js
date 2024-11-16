@@ -5,10 +5,10 @@ import axios from "axios";
  * @param {string} link link per la chiamata
  * @param {Object} objHeader oggetto con chiave api
  * @param {Object} objParams oggetto con i parametri
- * @returns {array}
+ * @returns {Object}
  */
 export default async function CallApi(link, objHeader, objParams) {
-    let data = [];
+    let data = null;
     
     const maxRetries = 1;
     let attempts = 0;
@@ -24,6 +24,8 @@ export default async function CallApi(link, objHeader, objParams) {
                 });
                 
                 data = response.data;
+                // console.log(data);
+                
                 return data;
             } catch (err) {
                 attempts += 1;
@@ -38,6 +40,6 @@ export default async function CallApi(link, objHeader, objParams) {
             break;
         }
     }
-
+    
     return data;
 }

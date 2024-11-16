@@ -8,7 +8,8 @@
             </div>
 
             <div class="ms_img d-flex justify-content-center align-items-center">
-                <img :src="getImagePath(store.italianDetails.backdrop_path)" alt="" class=" img-fluid">
+                <img :src="getImagePath(store.italianDetails.backdrop_path)" alt="" class=" img-fluid" @load="isLoaded=true" v-show="isLoaded">
+                <Loader v-if="!isLoaded"/>
             </div>
 
             <div class="ms_title p-3">
@@ -49,7 +50,7 @@
 
         </div>
 
-        <Recommendations :title="'Suggeriti'" :slides="suggested" />
+        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested"/>
 
 
 
@@ -60,6 +61,7 @@
 </template>
 
 <script>
+import Loader from '../components/Loader.vue';
 import Recommendations from '../components/Recommendations.vue';
 import Seasons from '../components/Seasons.vue';
 import ServicesView from '../components/ServicesView.vue';
@@ -68,7 +70,7 @@ import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 
 export default {
-    components: { ServicesView, Recommendations, Seasons },
+    components: { ServicesView, Recommendations, Seasons, Loader },
     data() {
         return {
             store,
@@ -77,8 +79,8 @@ export default {
             rent: [],
             buy: [],
             exsist: false,
-            suggested: null
-
+            suggested: null,
+            isLoaded: false
 
         }
     },
@@ -166,11 +168,12 @@ export default {
             // movieofthenight
             if (!store.details) {
 
-                store.details = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
+                const resp = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
                     country: 'it'
                 })
-
-                if (store.details.length === 0) {
+                if(resp) {
+                    store.details = resp;
+                } else if (!store.details) {
 
                     store.details = await TransformObject(store.italianDetails);
                 }
@@ -208,7 +211,7 @@ export default {
                 language: 'it-IT',
                 api_key: import.meta.env.VITE_KEY_MOVIEDB
             })
-            console.log(stream);
+            
             
 
 

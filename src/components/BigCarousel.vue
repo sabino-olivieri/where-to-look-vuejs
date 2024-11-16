@@ -1,5 +1,5 @@
 <template>
-    <div class="carousel-container mb-4" v-if="slides">
+    <div class="carousel-container mb-4" v-if="slides.shows">
         <swiper :modules="[SwiperNavigation, SwiperPagination, SwiperAutoplay, SwiperEffectFade]" :slides-per-view="1"
             :space-between="30" :loop="true" :pagination="{ clickable: true }" :navigation="true"
             @slideChangeTransitionEnd="handleSlideChange" :effect="'fade'" :fadeEffect="{ crossFade: true }"
@@ -79,8 +79,9 @@ export default {
         }
     },
     created() {
-        if(this.slides) {
-
+        
+        if(this.slides.shows) {
+            
             this.slides.shows.forEach(element => {
                 this.slideIndex.push(false)
             });
@@ -198,6 +199,14 @@ export default {
     transform: scale(150%);
 }
 
+
+// @media screen and (min-width: 769px) {
+//     :deep(.swiper-pagination) {
+//         display: block;
+//     }
+// }
+
+
 @media screen and (max-width: 768px) {
     .overlay {
     opacity: 0;
@@ -208,5 +217,10 @@ export default {
     width: 100%;
     min-height: 350px;
 }
+
+:deep(.swiper-pagination) {
+    display: none;
+}
+
 }
 </style>

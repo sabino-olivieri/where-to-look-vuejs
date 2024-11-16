@@ -1,34 +1,34 @@
 <template>
-    <div class="carousel-container my-5 px-3" v-if="slides && slides.results.length > 0">
+    <div class="carousel-container my-5 px-3" v-if="slides">
         <h2 class="">{{ title }}</h2>
         <swiper :modules="[Navigation, Autoplay, Virtual, EffectFade]" :breakpoints="{
             // mobile (default)
             320: {
-                slidesPerView: 1.5,
+                slidesPerView: 1.2,
                 spaceBetween: 15
             },
             640: {
-                slidesPerView: 2.5,
+                slidesPerView: 2.2,
 
             },
             // tablet
             768: {
-                slidesPerView: 3.5,
+                slidesPerView: 3.2,
 
             },
             // desktop
             1024: {
-                slidesPerView: 4.5,
+                slidesPerView: 4.2,
 
             },
 
             1440: {
-                slidesPerView: 6.5,
+                slidesPerView: 6.2,
 
             }
 
         }" :virtual="true"  :lazy="true" :watchSlidesProgress="true" :space-between="15"
-            :loop="false" :navigation="true" @slideChangeTransitionEnd="handleSlideChange" :autoplay="{
+            :loop="false" :navigation="true" :autoplay="{
                 delay: 10000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true
@@ -37,7 +37,12 @@
             <swiper-slide v-for="(slide, index) in slides.results" :key="index">
                 <router-link :to="{name: 'details', params: {id: `${slide.media_type}/${slide.id}`}}">
                 <div class="slide-content" @click="detailsCahnge(slide)">
-                    <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3">
+                    <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3" v-show="slideIndex[index]" @load="handleImageLoad(index)">
+
+                    <div class="slide-image d-flex justify-content-center align-items-center" v-if="!slideIndex[index]">
+                        <Loader/>
+                    </div>
+
                     <div class="slide-caption rounded-3">
                         <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
                     </div>
@@ -56,12 +61,14 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';  // Importante: aggiungere questo import
 import { store } from '../store';
+import Loader from './Loader.vue';
 
 export default {
     name: 'SwiperCarousel',
     components: {
         Swiper,
         SwiperSlide,
+        Loader,
     },
     props: {
         title: String,
@@ -75,20 +82,20 @@ export default {
         Virtual,
         EffectFade,
         store,
-
-        activeIndex: 0
+        slideIndex: [],
     }
 },
 
 created() {
-    console.log(this.slides, 'slides');
+    if(this.slides) {
+        this.slides.results.forEach(element => {
+            this.slideIndex.push(false);
+        });
+    }
     
 },
 
     methods: {
-        handleSlideChange(swiper) {
-            this.activeIndex = swiper.realIndex;
-        },
         
         detailsCahnge(slide) {
             store.italianDetails = slide;
@@ -113,6 +120,9 @@ created() {
                 return `https://placehold.co/600x400?text=${img.title}`;
             }
         },
+        handleImageLoad(index) {
+            this.slideIndex[index] = true;
+        }
 
     }
 }

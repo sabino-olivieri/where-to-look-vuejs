@@ -5,9 +5,9 @@ export const store = reactive ({
     // dove ci serve 
     // import {store} from "./store";
     // e in data mettiamo store
-    show: null,
-    movies: null,
-    series: null,
+    show: {shows: null},
+    movies: {shows: null},
+    series: {shows: null},
     details: null,
     italianDetails: null,
     header: {
