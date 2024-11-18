@@ -7,6 +7,7 @@
     --body-background: #1f1f1f;
     --color-body: #f2f2f2;
     --color-border: rgba(var(--bs-warning-rgb));
+    --bg-card: #242424;
 }
 
 body {
@@ -14,6 +15,11 @@ body {
     color: var(--color-body);
     font-family: poppins;
     font-size: 1.11rem;
+
+    a {
+        text-decoration: none;
+        color: var(--color-body);
+    }
 }
 
 @media (prefers-color-scheme: light) {

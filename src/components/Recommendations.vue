@@ -115,7 +115,7 @@ created() {
                 return new URL("https://image.tmdb.org/t/p/w342" + img.poster_path, import.meta.url).href;
 
             } else {
-                console.log(`https://placehold.co/600x400?text=${img.title}`);
+                
                 
                 return `https://placehold.co/600x400?text=${img.title}`;
             }

@@ -29,8 +29,8 @@ export default async function TransformObject(original) {
         // })),
         // directors: [], // Non presenti nell'oggetto originale
         // cast: [], // Non presenti nell'oggetto originale
-        rating: Math.round(original.vote_average * 10),
-        runtime: runtime,
+        // rating: Math.round(original.vote_average * 10),
+        // runtime: runtime,
         imageSet: {
             horizontalPoster: {
                 // w360: 'https://image.tmdb.org/t/p/w1280'+ backdrop_path ?? poster_path,
