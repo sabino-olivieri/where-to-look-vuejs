@@ -247,6 +247,10 @@ export default {
                 api_key: import.meta.env.VITE_KEY_MOVIEDB,
 
             })
+            if (this.suggested.results.length === 0) {
+                this.suggested = null;
+            }
+            
         }
 
     },
