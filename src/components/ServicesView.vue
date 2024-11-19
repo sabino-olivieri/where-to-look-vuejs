@@ -56,4 +56,10 @@ export default {
 .price {
     font-size: 12px;
 }
+
+@media screen and (max-width: 768px) {
+    .logos {
+        width: 60px;
+    }
+}
 </style>

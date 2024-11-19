@@ -52,6 +52,8 @@
 
         </div>
 
+        <DetailsComponent :id="id" v-if="store.italianDetails && id"/>
+
         <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested"/>
 
 
@@ -63,6 +65,7 @@
 </template>
 
 <script>
+import DetailsComponent from '../components/DetailsComponent.vue';
 import Loader from '../components/Loader.vue';
 import Recommendations from '../components/Recommendations.vue';
 import Seasons from '../components/Seasons.vue';
@@ -72,7 +75,7 @@ import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 
 export default {
-    components: { ServicesView, Recommendations, Seasons, Loader },
+    components: { ServicesView, Recommendations, Seasons, Loader, DetailsComponent },
     data() {
         return {
             store,
@@ -82,7 +85,8 @@ export default {
             buy: [],
             exsist: false,
             suggested: null,
-            isLoaded: false
+            isLoaded: false,
+            id: null,
 
         }
     },
@@ -153,7 +157,7 @@ export default {
         },
         async createPage() {
             const id = this.$route.params.id;
-
+            this.id = id;
 
 
             // themoviedb
@@ -164,7 +168,8 @@ export default {
                     api_key: import.meta.env.VITE_KEY_MOVIEDB
                 })
 
-
+                console.log(store.italianDetails);
+                
             }
 
             // movieofthenight

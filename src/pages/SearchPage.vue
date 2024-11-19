@@ -120,12 +120,14 @@ export default {
 .ms_card {
     max-height: 300px;
     background-color: var(--bg-card);
+    transition: box-shadow 0.5s ease;
 
     img {
         transition: transform 0.5s ease;
     }
 
     &:hover {
+    box-shadow: 2px 2px 0px var(--color-border);
         img {
             transform: scale(105%);
         }

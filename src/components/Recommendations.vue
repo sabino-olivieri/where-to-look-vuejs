@@ -43,7 +43,7 @@
                         <Loader/>
                     </div>
 
-                    <div class="slide-caption rounded-3">
+                    <div class="slide-caption rounded-bottom-3">
                         <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
                     </div>
                 </div>

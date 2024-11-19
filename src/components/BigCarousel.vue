@@ -1,7 +1,7 @@
 <template>
     <div class="carousel-container mb-4" v-if="slides.shows">
         <swiper :modules="[SwiperNavigation, SwiperPagination, SwiperAutoplay, SwiperEffectFade]" :slides-per-view="1"
-            :space-between="30" :loop="true" :pagination="{ clickable: true }" :navigation="true"
+            :space-between="30" :loop="true" :pagination="{ clickable: true }" :navigation="true" :lazy="true"
             @slideChangeTransitionEnd="handleSlideChange" :effect="'fade'" :fadeEffect="{ crossFade: true }"
             :speed="2000" :autoplay="{
                 delay: 10000,
