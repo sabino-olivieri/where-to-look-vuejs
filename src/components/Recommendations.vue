@@ -35,7 +35,7 @@
             }" class="mySwiper rounded-3">
 
             <swiper-slide v-for="(slide, index) in slides.results" :key="index">
-                <!-- <router-link :to="{ name: 'details', params: { id: `${slide.media_type}/${slide.id}` } }"> -->
+                <router-link :to="{ name: 'details', params: { id: `${slide.media_type}/${slide.id}` } }">
                     <div class="slide-content" @click="detailsCahnge(slide)">
                         <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3"
                             v-show="slideIndex[index]" @load="handleImageLoad(index)">
@@ -49,7 +49,7 @@
                             <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
                         </div>
                     </div>
-                <!-- </router-link> -->
+                </router-link>
             </swiper-slide>
         </swiper>
     </div>
@@ -100,17 +100,9 @@ export default {
     methods: {
 
         detailsCahnge(slide) {
-            // window.scrollTo({
-            //     top: 0,
-            //     behavoir: 'smooth'
-            // })
+
             store.italianDetails = slide;
             store.details = null;
-            
-            this.$router.push({
-                name: 'details',
-                params: { id: `${slide.media_type}/${slide.id}` }
-            });
         },
         getImagePath(img) {
             if (img.backdrop_path) {

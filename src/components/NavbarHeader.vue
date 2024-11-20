@@ -1,23 +1,31 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top" :class="{ 'navbar-scrolled': isScrolled || isMenuOpen }">
         <div class="container-fluid">
-            <img src="../assets/wheretolook.png" class="logo" alt="">
-            <i class="fa-solid fa-bars border border-2 p-2 rounded-2 navbar-toggler" type="button" 
-                data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
-                @click="toggleMenu">
-            </i>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="d-lg-flex gap-3 w-100 justify-content-between py-2 py-lg-0">
-                    <ul class="navbar-nav mb-3 mb-lg-0">
-                        <li class="nav-item" @click="closeMenu()">
-                            <router-link :to="{ name: 'home' }" class="nav-link active" aria-current="page">Home</router-link>
-                        </li>
-                    </ul>
-                    <SearchBar />
+            <router-link :to="{ name: 'home' }">
+                <img src="../assets/wheretolook.png" class="logo" alt="">
+            </router-link>
+            <!-- <div class="d-flex gap-2"> -->
+
+                
+                <span class="d-flex justify-content-center align-items-center  border border-2  navbar-toggler" @click="toggleMenu">
+                    <i class="fa-solid fa-bars" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
+                        aria-expanded="false" aria-label="Toggle navigation" >
+                    </i>
+                </span>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="d-lg-flex gap-3 w-100 justify-content-between py-2 py-lg-0">
+                        <ul class="navbar-nav mb-3 mb-lg-0">
+                            <li class="nav-item" @click="closeMenu()">
+                                <router-link :to="{ name: 'home' }" class="nav-link active"
+                                    aria-current="page">Home</router-link>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
+        <SearchBar @search="closeMenu" />
     </nav>
 </template>
 
@@ -44,7 +52,7 @@ export default {
 
             // Chiudi il menu se si scorre la pagina
             if (this.isMenuOpen) {
-                
+
                 this.closeMenu();
             }
         },
@@ -91,6 +99,9 @@ export default {
 
 .navbar-toggler {
     color: unset;
+    width: 38px;
+    height: 38px;
+    // padding: 0px;
+    border-radius: 50%;
 }
-
 </style>
