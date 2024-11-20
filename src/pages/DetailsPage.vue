@@ -255,6 +255,11 @@ export default {
             if (this.suggested.results.length === 0) {
                 this.suggested = null;
             }
+
+            window.scrollTo({
+                top: 0,
+                behavoir: 'smooth'
+            })
             
         }
 
@@ -326,4 +331,13 @@ export default {
 
     }
 }
+
+
+
+
+.slide-enter-active.slide-enter-to {
+
+    transition-delay: 1s;
+}
+
 </style>

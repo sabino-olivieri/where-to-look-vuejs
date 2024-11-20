@@ -1,8 +1,14 @@
 <template>
+  <transition name="slide">
 
-  <BigCarousel :slides="store.show" v-if="store.show.shows" />
-  <MovieCarousel title="Film" :slides="store.movies"  v-if="store.movies.shows"/>
-  <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows"/>
+    <main>
+  
+      <BigCarousel :slides="store.show" v-if="store.show.shows" />
+      <MovieCarousel title="Film" :slides="store.movies"  v-if="store.movies.shows"/>
+      <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows"/>
+  
+    </main>
+  </transition>
 
 </template>
 

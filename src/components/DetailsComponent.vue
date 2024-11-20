@@ -20,12 +20,14 @@
             <!-- durata -->
             <div class="row mb-3">
                 <div class="col d-flex gap-3">
-                    <span class="text-uppercase">Durata {{ store.italianDetails.episode_run_time &&  store.italianDetails.episode_run_time[0] ? ' episodio' : '' }}:</span>
+                    <span class="text-uppercase">Durata {{ store.italianDetails.episode_run_time &&
+                        store.italianDetails.episode_run_time[0] ? ' episodio' : '' }}:</span>
 
                     <div class="d-flex gap-2 flex-wrap">
 
                         <span class="">
-                            {{ formatTime(store.italianDetails.runtime ?? (store.italianDetails.episode_run_time[0] > 0 ? store.italianDetails.episode_run_time[0] : 0  )) }}
+                            {{ formatTime(store.italianDetails.runtime ?? (store.italianDetails.episode_run_time[0] > 0
+                                ? store.italianDetails.episode_run_time[0] : 0 )) }}
                         </span>
                     </div>
                 </div>
@@ -35,9 +37,11 @@
             <div class="row gap-2 flex-nowrap overflow-x-scroll py-2 px-3">
 
                 <div class="text-center p-0 rounded-3 ms_actors" v-for="actor, index in actors" :key="actor">
-                    <img  :src="getImagePath(actor.profile_path)" class="rounded-top-3 mb-1 ms_img" alt="" v-show="actorsIndex[index]" @load="actorsIndex[index] = true">
-                    <div class="ms_img mb-1 d-flex justify-content-center align-items-center" v-if="!actorsIndex[index]">
-                        <loader/>
+                    <img :src="getImagePath(actor.profile_path)" class="rounded-top-3 mb-1 ms_img" alt=""
+                        v-show="actorsIndex[index]" @load="actorsIndex[index] = true">
+                    <div class="ms_img mb-1 d-flex justify-content-center align-items-center"
+                        v-if="!actorsIndex[index]">
+                        <loader />
                     </div>
                     <div class="p-2">
                         <h6>{{ actor.name }}</h6>
@@ -55,7 +59,7 @@ import { store } from '../store';
 import Loader from './Loader.vue';
 
 export default {
-  components: { Loader },
+    components: { Loader },
     data() {
         return {
             store,
@@ -77,7 +81,7 @@ export default {
         if (resp && resp.cast) {
 
             this.actors = resp.cast.slice(0, 10);
-            console.log(this.actors); 
+            console.log(this.actors);
 
             this.actors.forEach(element => {
                 this.actorsIndex.push(false);
@@ -86,10 +90,11 @@ export default {
 
 
     },
+
     methods: {
         formatTime(minutes) {
 
-            if(minutes === 0) return 'N/D'
+            if (minutes === 0) return 'N/D'
 
             const hours = Math.floor(minutes / 60);
             const remainingMinutes = minutes % 60;
@@ -118,17 +123,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .ms_actors {
-        background-color: var(--bg-card);
-        max-width: 150px;
+.ms_actors {
+    background-color: var(--bg-card);
+    max-width: 150px;
 
-        .ms_img {
-            width: 100%;
-            height: 225px;
-            object-fit: cover;
-        }
-        span {
-            font-size: 12px;
-        }
+    .ms_img {
+        width: 100%;
+        height: 225px;
+        object-fit: cover;
     }
+
+    span {
+        font-size: 12px;
+    }
+}
 </style>

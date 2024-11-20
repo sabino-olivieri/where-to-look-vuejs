@@ -27,27 +27,29 @@
 
             }
 
-        }" :virtual="true"  :lazy="true" :watchSlidesProgress="true" :space-between="15"
-            :loop="false" :navigation="true" :autoplay="{
+        }" :virtual="true" :lazy="true" :watchSlidesProgress="true" :space-between="15" :loop="false"
+            :navigation="true" :autoplay="{
                 delay: 10000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true
             }" class="mySwiper rounded-3">
 
             <swiper-slide v-for="(slide, index) in slides.results" :key="index">
-                <router-link :to="{name: 'details', params: {id: `${slide.media_type}/${slide.id}`}}">
-                <div class="slide-content" @click="detailsCahnge(slide)">
-                    <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3" v-show="slideIndex[index]" @load="handleImageLoad(index)">
+                <!-- <router-link :to="{ name: 'details', params: { id: `${slide.media_type}/${slide.id}` } }"> -->
+                    <div class="slide-content" @click="detailsCahnge(slide)">
+                        <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3"
+                            v-show="slideIndex[index]" @load="handleImageLoad(index)">
 
-                    <div class="slide-image d-flex justify-content-center align-items-center" v-if="!slideIndex[index]">
-                        <Loader/>
-                    </div>
+                        <div class="slide-image d-flex justify-content-center align-items-center"
+                            v-if="!slideIndex[index]">
+                            <Loader />
+                        </div>
 
-                    <div class="slide-caption rounded-bottom-3">
-                        <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
+                        <div class="slide-caption rounded-bottom-3">
+                            <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
+                        </div>
                     </div>
-                </div>
-            </router-link>
+                <!-- </router-link> -->
             </swiper-slide>
         </swiper>
     </div>
@@ -55,7 +57,7 @@
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Navigation, Pagination, Autoplay, Virtual, EffectFade  } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, Virtual, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -75,48 +77,53 @@ export default {
         slides: Object
     },
     data() {
-    return {
-        Navigation,  // Usa direttamente i moduli importati
-        Pagination,
-        Autoplay,
-        Virtual,
-        EffectFade,
-        store,
-        slideIndex: [],
-    }
-},
+        return {
+            Navigation,  // Usa direttamente i moduli importati
+            Pagination,
+            Autoplay,
+            Virtual,
+            EffectFade,
+            store,
+            slideIndex: [],
+        }
+    },
 
-created() {
-    if(this.slides) {
-        this.slides.results.forEach(element => {
-            this.slideIndex.push(false);
-        });
-    }
-    
-},
+    created() {
+        if (this.slides) {
+            this.slides.results.forEach(element => {
+                this.slideIndex.push(false);
+            });
+        }
+
+    },
 
     methods: {
-        
+
         detailsCahnge(slide) {
+            // window.scrollTo({
+            //     top: 0,
+            //     behavoir: 'smooth'
+            // })
             store.italianDetails = slide;
-            window.scrollTo({
-                top: 0,
-                behavoir: 'smooth'
-            })
             store.details = null;
+            
+            this.$router.push({
+                name: 'details',
+                params: { id: `${slide.media_type}/${slide.id}` }
+            });
         },
         getImagePath(img) {
-            if(img.backdrop_path) {
-                
+            if (img.backdrop_path) {
+
                 return new URL("https://image.tmdb.org/t/p/w342" + img.backdrop_path, import.meta.url).href;
 
-            } else if(img.poster_path) {
-                
+            } else if (img.poster_path) {
+
                 return new URL("https://image.tmdb.org/t/p/w342" + img.poster_path, import.meta.url).href;
 
             } else {
-                
-                
+
+
                 return `https://placehold.co/600x400?text=${img.title}`;
             }
         },
@@ -140,6 +147,7 @@ created() {
 .slide-content {
     position: relative;
     transition: all 0.5s;
+
     &:hover {
         .slide-caption {
             height: auto;
@@ -172,8 +180,8 @@ created() {
     h6 {
         font-size: 18px;
         text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+        white-space: nowrap;
+        overflow: hidden;
     }
 }
 

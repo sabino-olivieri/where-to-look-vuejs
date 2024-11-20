@@ -23,20 +23,43 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 10px; /* Larghezza della scrollbar */
-    height: 10px;
-    background: var(--body-background); /* Colore di sfondo della traccia */
+    width: 8px;
+    /* Larghezza della scrollbar */
+    height: 8px;
+    background: var(--body-background);
+    /* Colore di sfondo della traccia */
 
 
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background:var(--color-body); /* Colore del pollice */
-    border-radius: 10px; /* Angoli arrotondati */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-body);
+    /* Colore del pollice */
+    border-radius: 10px;
+
+    /* Angoli arrotondati */
     &:hover {
         cursor: grab;
     }
-  }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: transform 0.8s ease;
+    // position: fixed;
+}
+
+.slide-enter-from {
+    transform: translateX(100%);
+}
+
+.slide-leave-to {
+    transform: translateX(-100%);
+}
+
+#app {
+    overflow-x: hidden;
+}
 
 @media (prefers-color-scheme: light) {
     :root {
@@ -44,4 +67,3 @@ body {
         --color-body: #1f1f1f;
     }
 }
-
