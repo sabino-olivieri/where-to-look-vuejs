@@ -168,7 +168,6 @@ export default {
                     api_key: import.meta.env.VITE_KEY_MOVIEDB
                 })
 
-                console.log(store.italianDetails);
                 
             }
 

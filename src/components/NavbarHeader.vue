@@ -6,23 +6,23 @@
             </router-link>
             <!-- <div class="d-flex gap-2"> -->
 
-                
-                <span class="d-flex justify-content-center align-items-center  border border-2  navbar-toggler" @click="toggleMenu">
-                    <i class="fa-solid fa-bars" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-                        aria-expanded="false" aria-label="Toggle navigation" >
-                    </i>
-                </span>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <div class="d-lg-flex gap-3 w-100 justify-content-between py-2 py-lg-0">
-                        <ul class="navbar-nav mb-3 mb-lg-0">
-                            <li class="nav-item" @click="closeMenu()">
-                                <router-link :to="{ name: 'home' }" class="nav-link active"
-                                    aria-current="page">Home</router-link>
-                            </li>
-                        </ul>
-                    </div>
+
+            <span class="d-flex justify-content-center align-items-center border border-2 navbar-toggler d-lg-none" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation" @click="toggleMenu">
+                <i class="fa-solid fa-bars">
+                </i>
+            </span>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="d-lg-flex gap-3 w-100 justify-content-between py-2 py-lg-0">
+                    <ul class="navbar-nav mb-3 mb-lg-0">
+                        <li class="nav-item" @click="closeMenu()">
+                            <router-link :to="{ name: 'home' }" class="nav-link active"
+                                aria-current="page">Home</router-link>
+                        </li>
+                    </ul>
                 </div>
+            </div>
             <!-- </div> -->
         </div>
         <SearchBar @search="closeMenu" />

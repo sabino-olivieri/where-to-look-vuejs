@@ -34,7 +34,7 @@
             </div>
 
             <!-- cast -->
-            <div class="row gap-2 flex-nowrap overflow-x-scroll py-2 px-3">
+            <div class="row gap-2 flex-nowrap overflow-x-scroll py-2 px-3" >
 
                 <div class="text-center p-0 rounded-3 ms_actors" v-for="actor, index in actors" :key="actor">
                     <img :src="getImagePath(actor.profile_path)" class="rounded-top-3 mb-1 ms_img" alt=""
@@ -81,7 +81,6 @@ export default {
         if (resp && resp.cast) {
 
             this.actors = resp.cast.slice(0, 10);
-            console.log(this.actors);
 
             this.actors.forEach(element => {
                 this.actorsIndex.push(false);

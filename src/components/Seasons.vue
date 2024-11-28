@@ -1,8 +1,10 @@
 <template>
-    <div class="container p-0 my-3 rounded-3 border border-2 border-warning" id="seasons" :class="{ expanded: isExpanded }" :style="{maxHeight: `${maxH}px`}">
-        
+    <div class="container p-0 my-3 rounded-3 border border-2 border-warning" id="seasons"
+        :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }">
+
         <div class="accordion" id="accordionSeason">
-            <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning" v-for="(season, index) in store.italianDetails.seasons" :key="index">
+            <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
+                v-for="(season, index) in store.italianDetails.seasons" :key="index">
                 <h2 class="accordion-header" @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         :data-bs-target="'#collapseSeason' + index" aria-expanded="true"
@@ -23,11 +25,12 @@
                                         :aria-controls="'collapseEpisode' + episode.episode_number">
                                         Episodio: {{ episode.episode_number }} - {{ episode.name }}
                                     </button>
-                                </h2>   
+                                </h2>
                                 <div :id="'collapseEpisode' + episode.episode_number"
                                     class="accordion-collapse collapse" :data-bs-parent="'#accordionEpisode' + index">
                                     <div class="accordion-body">
-                                        {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile' }}
+                                        {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile'
+                                        }}
                                     </div>
                                 </div>
                             </div>
@@ -62,19 +65,19 @@ export default {
             maxH: 200,
             accordionH: 0,
             resizeObserver: null,
+            seasonTopPosition: 0
         };
     },
     methods: {
         async HandleClickSeason(id, numSeason) {
+            this.isExpanded = true;
             if (!store.season) {
-                this.isExpanded = true;
                 store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, {
                     language: 'it-IT',
                     api_key: import.meta.env.VITE_KEY_MOVIEDB,
                 });
             } else if (store.season.season_number !== numSeason) {
                 store.season = null;
-                this.isExpanded = true;
                 store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, {
                     language: 'it-IT',
                     api_key: import.meta.env.VITE_KEY_MOVIEDB,
@@ -85,18 +88,34 @@ export default {
             this.isExpanded = !this.isExpanded;
 
             if (!this.isExpanded) {
-                
-                // Chiude tutti gli accordion
-                const accordions = document.querySelectorAll('.accordion-collapse');
-                accordions.forEach(accordion => {
-                    accordion.classList.remove('show');
-                });
 
+                window.scrollTo({
+                top: this.seasonTopPosition,
+                behavoir: 'smooth'
+            })
+
+                // Chiude tutti gli accordion
                 const buttons = document.querySelectorAll('.accordion-button');
                 buttons.forEach(accordion => {
                     accordion.classList.add('collapsed');
                 });
+
+                setTimeout(() => {
+                    const accordions = document.querySelectorAll('.accordion-collapse');
+                    accordions.forEach(accordion => {
+                        accordion.classList.remove('show');
+                    });
+                },500);
+
                 this.maxH = 200;
+                const seasonElem = document.getElementById('seasons');
+
+                if (seasonElem && seasonElem.offsetHeight > 200) {
+                    this.hasMaxHeight = true;
+                } else {
+                    this.hasMaxHeight = false;
+                }
+
             } else {
                 this.maxH = this.accordionH;
             }
@@ -109,6 +128,7 @@ export default {
                 for (const entry of entries) {
                     if (this.isExpanded) {
                         this.maxH = entry.contentRect.height;
+                        this.maxH > 200 ? this.hasMaxHeight = true : this.hasMaxHeight = false;
                     }
                 }
             });
@@ -123,7 +143,11 @@ export default {
     },
     mounted() {
         const seasonElem = document.getElementById('seasons');
-        if (seasonElem.offsetHeight === 200) {
+        const rect = seasonElem.getBoundingClientRect();
+        this.seasonTopPosition = rect.top;
+        
+
+        if (seasonElem && seasonElem.offsetHeight === 200) {
             this.hasMaxHeight = true;
         }
 
@@ -168,7 +192,7 @@ export default {
             transition: all 0.5s ease;
 
             &::after {
-                background-image: unset; 
+                background-image: unset;
                 font: var(--fa-font-solid);
                 content: '\f078';
             }
@@ -177,6 +201,7 @@ export default {
                 box-shadow: unset;
             }
         }
+
         .accordion-button:not(.collapsed) {
             background-color: var(--color-border);
             color: #1f1f1f;
@@ -184,4 +209,6 @@ export default {
         }
     }
 }
+
+
 </style>

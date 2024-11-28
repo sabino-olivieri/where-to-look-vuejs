@@ -50,13 +50,13 @@
                             <h6 class="mb-3">{{ slide.title }}</h6>
 
                             <div class="d-flex gap-2">
-
-                                <div class="logos d-flex align-items-center rounded-3 p-1"
+                                
+                                <div class="logos d-flex align-items-center justify-content-center flex-column rounded-3 p-1"
                                     v-for="stream in slide.streamingOptions.it" :key="stream"
                                     :style="{ backgroundColor: stream.service.themeColorCode }">
 
                                     <img :src="stream.service.imageSet.whiteImage" class="" alt="">
-
+                                    <span class="addon" v-if="stream.type === 'addon'">Addon</span>
                                 </div>
 
 
@@ -148,6 +148,10 @@ export default {
             animation: slideUp 0.8s ease forwards;
         }
     }
+
+    .addon {
+        font-size: 6px;
+    }
 }
 
 .slide-image {
@@ -180,6 +184,10 @@ export default {
 
     width: 35px;
     aspect-ratio: 1/1;
+    img {
+        width: 100%;
+        object-fit: cover;
+    }
 }
 
 @keyframes slideUp {

@@ -1,6 +1,6 @@
 <template>
     <div class="search-container" :class="!isLarge ? 'hidden-container' : ''">
-        <input type="text" v-model.trim="searchTerm" placeholder="Cerca..." class="search-input" :class="!isLarge ? 'hidden-input' : ''" @keypress.enter="submitSearch"  />
+        <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : ''" @keypress.enter="submitSearch"  />
         <button @click="submitSearch" class="search-button">
             <i class="fas fa-search"></i>
         </button>
@@ -38,8 +38,9 @@ export default {
 <style lang="scss" scoped>
 .search-container {
     position: absolute;
-    // transform: translateY(-50%);
-    top: 12px;
+    transform: translateY(-50%);
+    top: 33px;
+    // top:50%;
     right: 55px;
     display: flex;
     align-items: center;
@@ -65,9 +66,7 @@ export default {
     }
 }
 
-.hidden-input {
-    max-width: 0px;
-}
+
 
 .hidden-container {
     border: 0px;
@@ -101,5 +100,15 @@ export default {
 
     right: 12px;
 }
+}
+
+@media screen and (max-width: 576px) {
+    .search-input {
+        max-width: calc(100vw - 180px);
+    }
+}
+
+.hidden-input {
+    max-width: 0px;
 }
 </style>

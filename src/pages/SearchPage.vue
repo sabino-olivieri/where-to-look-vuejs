@@ -1,6 +1,7 @@
 <template>
     <div class="container-fluid mt-5 py-4">
-        <div class="row g-3">
+        <div class="row g-3" v-if="results.results.length > 0">
+            <h5 class="mb-0">Risultati di ricerca per: <span class="text-warning">{{ title }}</span></h5>
             <div class="col-12 col-md-6 col-lg-4 " v-for="result, index in results.results" :key="result"
                 @click="italianDetailsChange(result)">
                 <router-link class="link"
@@ -39,6 +40,9 @@
                 </router-link>
 
             </div>
+        </div>
+        <div class="row m-2" v-else>
+            <h2 class="text-center p-5 border border-1 rounded-3 border-warning mb-0">Nessun risultato utile per "{{ title }}"</h2>
         </div>
     </div>
 </template>

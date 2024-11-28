@@ -5,12 +5,14 @@
         <div class="d-flex flex-wrap gap-2 align-items-center">
 
             <div class="text-center" v-for="stream in arrStream" :key="stream">
-                <div class="logos rounded-3" :class="stream.service.themeColorCode ? 'p-1' : ''"
-                    :style="{ backgroundColor: stream.service.themeColorCode ?? 'transparent' }">
-                    <img :src="stream.service.imageSet.whiteImage" class="rounded-3" alt="">
-                </div>
-                <span class="price" v-if="stream.price">{{ stream.quality.toUpperCase() }} {{ stream.price.amount ?
-                    stream.price.amount + ' €' : ' Prezzo N/D' }}</span>
+                <a :href="stream.link != '' ? stream.link : '#'" target="_blank" rel="noopener noreferrer">
+                    <div class="logos rounded-3" :class="stream.service.themeColorCode ? 'p-1' : ''"
+                        :style="{ backgroundColor: stream.service.themeColorCode ?? 'transparent' }">
+                        <img :src="stream.service.imageSet.whiteImage" class="rounded-3" alt="">
+                    </div>
+                    <span class="price" v-if="stream.price">{{ stream.quality.toUpperCase() }} {{ stream.price.amount ?
+                        stream.price.amount + ' €' : ' Prezzo N/D' }}</span>
+                </a>
             </div>
         </div>
     </div>
@@ -50,6 +52,7 @@ export default {
         height: 100%;
         object-fit: contain;
     }
+
 
 }
 
