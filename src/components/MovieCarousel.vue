@@ -107,7 +107,6 @@ export default {
     },
     created() {
         if (this.slides.shows) {
-            console.log(this.slides.shows);
 
             this.slides.shows.forEach(element => {
                 this.slideIndex.push(false)
@@ -119,7 +118,6 @@ export default {
 
         detailsCahnge(slide) {
             store.details = slide;
-            console.log(store.details);
 
         },
         handleImageLoad(index) {

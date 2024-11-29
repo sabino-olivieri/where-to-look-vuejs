@@ -10,7 +10,7 @@ import axios from "axios";
 export default async function CallApi(link, objHeader, objParams) {
     let data = null;
     
-    const maxRetries = 1;
+    const maxRetries = 3;
     let attempts = 0;
 
     

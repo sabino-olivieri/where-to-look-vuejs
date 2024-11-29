@@ -99,11 +99,9 @@ export default {
     methods: {
 
         detailsCahnge(slide) {
-            store.isPageReady = false;
+            store.isPageReady = false;            
 
             setTimeout(()=> {
-                store.italianDetails = slide;
-            store.details = null;
 
             this.$router.push({
                 name: 'details',

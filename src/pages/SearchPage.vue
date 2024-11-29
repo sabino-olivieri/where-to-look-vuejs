@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid mt-5 py-4" :class="!store.isPageReady ? 'hidden-animation' : ''">
-        <div class="row g-3" v-if="results.results.length > 0">
+        <div class="row g-3" v-if="results && results.results && results.results.length > 0">
             <h5 class="mb-0">Risultati di ricerca per: <span class="text-warning">{{ title }}</span></h5>
             <div class="col-12 col-md-6 col-lg-4 animate" v-for="result, index in results.results" :key="result"
                 @click="italianDetailsChange(result)">
@@ -61,9 +61,6 @@ export default {
             store,
         }
     },
-    created() {
-        this.title = this.$route.query.title;
-    },
 
 
     beforeUnmount() {
@@ -71,7 +68,9 @@ export default {
     },
     beforeRouteLeave(to, from, next) {
         store.isPageReady = false;
-
+        setTimeout(() => {
+            next();
+        },500);
     },
 
     methods: {
@@ -103,25 +102,24 @@ export default {
             this.isLoading = false;
         },
         italianDetailsChange(result) {
-
-
+            
             store.isPageReady = false;
 
             setTimeout(() => {
-                store.italianDetails = result;
-
+                
                 this.$router.push({
                     name: 'details',
-                    params: { id: result.media_type + '/' + result.id }
+                    params: { id: `${result.media_type}/${result.id}`}
                 });
             }, 500);
+            
         },
 
     },
     watch: {
         '$route.query.title': {
             async handler(newTitle) {
-                this.title = newTitle;
+                this.title = this.$route.query.title;
                 await this.getResult();
                 AnimateOnScroll();
                 store.isPageReady = true;

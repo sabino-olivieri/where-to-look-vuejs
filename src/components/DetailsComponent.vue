@@ -25,7 +25,7 @@
 
                     <div class="d-flex gap-2 flex-wrap">
 
-                        <span class="">
+                        <span class="" v-if="store.italianDetails.runtime || store.italianDetails.episode_run_time">
                             {{ formatTime(store.italianDetails.runtime ?? (store.italianDetails.episode_run_time[0] > 0
                                 ? store.italianDetails.episode_run_time[0] : 0 )) }}
                         </span>
@@ -73,10 +73,7 @@ export default {
     async created() {
 
 
-        const resp = await CallApi(`https://api.themoviedb.org/3/${this.id}/credits`, {}, {
-            language: 'it-IT',
-            api_key: import.meta.env.VITE_KEY_MOVIEDB
-        });
+        const resp = await CallApi(`https://api.themoviedb.org/3/${this.id}/credits`, {}, store.objPramsMovieDB);
 
         if (resp && resp.cast) {
 
@@ -114,7 +111,7 @@ export default {
 
             } else {
 
-                return `https://placehold.co/92x138?text=N/D}`;
+                return `https://placehold.co/92x138?text=N/D`;
             }
         }
     }

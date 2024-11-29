@@ -1,19 +1,20 @@
 <template>
     <main :class="!store.isPageReady ? 'hidden-animation' : ''" v-if="store.details && store.italianDetails">
 
-        <div class="hero d-flex justify-content-center align-items-center position-relative animate">
+        <div class="hero d-flex justify-content-center justify-content-lg-end align-items-center position-relative animate">
 
             <div class="overlay">
 
             </div>
 
             <div class="ms_img d-flex justify-content-center align-items-center">
-                <img :src="getImagePath(store.italianDetails.backdrop_path)" alt="" class=" img-fluid" @load="isLoaded=true" v-show="isLoaded">
-                <Loader v-if="!isLoaded"/>
+                <img :src="getImagePath(store.italianDetails.backdrop_path)" alt="" class=" img-fluid"
+                    @load="isLoaded = true" v-show="isLoaded">
+                <Loader v-if="!isLoaded" />
             </div>
 
             <div class="ms_title p-3">
-                <h1 class="m-0">{{ store.italianDetails.title ?? store.italianDetails.name }}</h1>
+                <h1 class="m-0 mb-lg-5 p-lg-2">{{ store.italianDetails.title ?? store.italianDetails.name }}</h1>
             </div>
 
         </div>
@@ -41,26 +42,27 @@
 
                     <!-- rent -->
                     <ServicesView :title="'noleggia'" :arrStream="rent" />
-                    
+
                     <span class=" align-content-end">Powered by JustWatch</span>
                 </div>
 
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
             </div>
 
-            
-            <Seasons v-if="store.italianDetails.seasons" class="animate"/>
+            <Videos :video="video" class="animate" v-if="video" />
+
+            <Seasons v-if="store.italianDetails.seasons" class="animate" />
         </div>
 
-        <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate"/>
+        <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate" />
 
-        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested" class="animate"/>
+        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested" class="animate" />
 
 
 
     </main>
     <div v-if="!store.isPageReady" class="d-flex justify-content-center align-items-center vh-100">
-        <Loader/>
+        <Loader />
     </div>
 
 
@@ -73,13 +75,14 @@ import Loader from '../components/Loader.vue';
 import Recommendations from '../components/Recommendations.vue';
 import Seasons from '../components/Seasons.vue';
 import ServicesView from '../components/ServicesView.vue';
+import Videos from '../components/Videos.vue';
 import AnimateOnScroll from '../functions/AnimateOnScroll';
 import CallApi from '../functions/CallApi';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 
 export default {
-    components: { ServicesView, Recommendations, Seasons, Loader, DetailsComponent },
+    components: { ServicesView, Recommendations, Seasons, Loader, DetailsComponent, Videos },
     data() {
         return {
             store,
@@ -91,6 +94,7 @@ export default {
             suggested: null,
             isLoaded: false,
             id: null,
+            video: null
 
 
 
@@ -99,7 +103,7 @@ export default {
     created() {
 
 
-        this.createPage()
+        // this.createPage()
 
     },
 
@@ -112,12 +116,13 @@ export default {
         this.exsist = false;
         this.suggested = null;
 
+
     },
     beforeRouteLeave(to, from, next) {
         store.isPageReady = false;
         setTimeout(() => {
             next();
-        },500);
+        }, 500);
     },
     methods: {
         getImagePath(img) {
@@ -167,6 +172,12 @@ export default {
                 ...additionalFields
             };
         },
+        async callVideos(id) {
+            const resp = await CallApi(`https://api.themoviedb.org/3/${id}/videos`, {}, store.objPramsMovieDB);
+            this.video = resp && resp.results && resp.results.length > 0 ? resp.results[0] : null;
+            console.log(this.video);
+
+        },
         async createPage() {
             const id = this.$route.params.id;
             this.id = id;
@@ -175,12 +186,8 @@ export default {
             // themoviedb
             if (!store.italianDetails) {
 
-                store.italianDetails = await CallApi(`https://api.themoviedb.org/3/${id}`, {}, {
-                    language: 'it-IT',
-                    api_key: import.meta.env.VITE_KEY_MOVIEDB
-                })
+                store.italianDetails = await CallApi(`https://api.themoviedb.org/3/${id}`, {}, store.objPramsMovieDB);
 
-                
             }
 
             // movieofthenight
@@ -189,7 +196,7 @@ export default {
                 const resp = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
                     country: 'it'
                 })
-                if(resp) {
+                if (resp) {
                     store.details = resp;
                 } else if (!store.details) {
 
@@ -225,12 +232,9 @@ export default {
                 });
             }
 
-            const stream = await CallApi(`https://api.themoviedb.org/3/${id}/watch/providers`, {}, {
-                language: 'it-IT',
-                api_key: import.meta.env.VITE_KEY_MOVIEDB
-            })
-            
-            
+            const stream = await CallApi(`https://api.themoviedb.org/3/${id}/watch/providers`, {}, store.objPramsMovieDB)
+
+
 
 
             const streamTypes = {
@@ -258,20 +262,18 @@ export default {
                 }
             });
 
-            this.suggested = await CallApi(`https://api.themoviedb.org/3/${id}/recommendations`, {}, {
-                language: 'it-IT',
-                api_key: import.meta.env.VITE_KEY_MOVIEDB,
-
-            })
+            this.suggested = await CallApi(`https://api.themoviedb.org/3/${id}/recommendations`, {}, store.objPramsMovieDB)
             if (this.suggested.results.length === 0) {
                 this.suggested = null;
             }
+
+            this.callVideos(id);
 
             window.scrollTo({
                 top: 0,
                 behavoir: 'smooth'
             })
-            
+
         }
 
     },
@@ -305,14 +307,16 @@ export default {
     height: 100%;
     top: 0;
     left: 0;
-    background: radial-gradient(circle, rgba(31, 31, 31, 0) 50%, rgba(31, 31, 31, 1) 68%, rgba(31, 31, 31, 1) 100%);
+    // background: radial-gradient(circle, rgba(31, 31, 31, 0) 50%, rgba(31, 31, 31, 1) 68%, rgba(31, 31, 31, 1) 100%);
+    background: linear-gradient(-90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,1) 75%, rgba(31,31,31,1) 100%);
 }
 
 .ms_img {
-    aspect-ratio: 16/5;
+    aspect-ratio: 16/9;
     overflow: hidden;
-    min-height: 500px;
-    max-width: 80%;
+    // max-height: 720px;
+    max-width: 100%;
+    
 
     img {
         width: 100%;
@@ -332,6 +336,7 @@ export default {
     align-items: end;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #1f1f1f 100%);
 }
+
 main {
     transition: all 0.5s ease;
 }
@@ -343,10 +348,9 @@ main {
 
     .ms_img {
         min-height: 350px;
+        aspect-ratio: 16/5;      
         max-width: 100%;
 
     }
 }
-
-
 </style>

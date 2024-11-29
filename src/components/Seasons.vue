@@ -76,16 +76,10 @@ export default {
         async HandleClickSeason(id, numSeason) {
             this.isExpanded = true;
             if (!store.season) {
-                store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, {
-                    language: 'it-IT',
-                    api_key: import.meta.env.VITE_KEY_MOVIEDB,
-                });
+                store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, store.objPramsMovieDB);
             } else if (store.season.season_number !== numSeason) {
                 store.season = null;
-                store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, {
-                    language: 'it-IT',
-                    api_key: import.meta.env.VITE_KEY_MOVIEDB,
-                });
+                store.season = await CallApi(`https://api.themoviedb.org/3/tv/${id}/season/${numSeason}`, {}, store.objPramsMovieDB);
             }
         },
         toggleContainer() {

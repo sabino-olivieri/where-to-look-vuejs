@@ -82,10 +82,7 @@ export default {
 
   methods: {
     async CallDefault(search, storeArray) {
-      const resp = await CallApi(`https://api.themoviedb.org/3/trending/${search}/week`, {}, {
-        language: 'it-IT',
-        api_key: import.meta.env.VITE_KEY_MOVIEDB
-      });
+      const resp = await CallApi(`https://api.themoviedb.org/3/trending/${search}/week`, {}, store.objPramsMovieDB);
 
       const array = await Promise.all(
         resp.results.map(async (elem) => {
