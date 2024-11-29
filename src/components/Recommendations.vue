@@ -35,21 +35,20 @@
             }" class="mySwiper rounded-3">
 
             <swiper-slide v-for="(slide, index) in slides.results" :key="index">
-                <router-link :to="{ name: 'details', params: { id: `${slide.media_type}/${slide.id}` } }">
-                    <div class="slide-content" @click="detailsCahnge(slide)">
-                        <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3"
-                            v-show="slideIndex[index]" @load="handleImageLoad(index)">
+                <!-- <router-link :to="{ name: 'details', params: { id: `${slide.media_type}/${slide.id}` } }"> -->
+                <div class="slide-content" @click="detailsCahnge(slide)">
+                    <img :src="getImagePath(slide)" :alt="slide.title" class="slide-image rounded-3"
+                        v-show="slideIndex[index]" @load="handleImageLoad(index)">
 
-                        <div class="slide-image d-flex justify-content-center align-items-center"
-                            v-if="!slideIndex[index]">
-                            <Loader />
-                        </div>
-
-                        <div class="slide-caption rounded-bottom-3">
-                            <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
-                        </div>
+                    <div class="slide-image d-flex justify-content-center align-items-center" v-if="!slideIndex[index]">
+                        <Loader />
                     </div>
-                </router-link>
+
+                    <div class="slide-caption rounded-bottom-3">
+                        <h6 class="m-0">{{ slide.title ?? slide.name }}</h6>
+                    </div>
+                </div>
+                <!-- </router-link> -->
             </swiper-slide>
         </swiper>
     </div>
@@ -100,9 +99,22 @@ export default {
     methods: {
 
         detailsCahnge(slide) {
+            store.isPageReady = false;
 
-            store.italianDetails = slide;
+            setTimeout(()=> {
+                store.italianDetails = slide;
             store.details = null;
+
+            this.$router.push({
+                name: 'details',
+                params: {
+                    id: `${slide.media_type}/${slide.id}`
+                }
+            });
+            },500)
+
+
+
         },
         getImagePath(img) {
             if (img.backdrop_path) {
@@ -139,7 +151,8 @@ export default {
 .slide-content {
     position: relative;
     transition: all 0.5s;
-
+    cursor: pointer;
+    
     &:hover {
         .slide-caption {
             height: auto;

@@ -1,7 +1,7 @@
 <template>
-    <main v-if="store.details && store.italianDetails">
+    <main :class="!store.isPageReady ? 'hidden-animation' : ''" v-if="store.details && store.italianDetails">
 
-        <div class="hero d-flex justify-content-center align-items-center position-relative">
+        <div class="hero d-flex justify-content-center align-items-center position-relative animate">
 
             <div class="overlay">
 
@@ -19,7 +19,7 @@
         </div>
 
         <!-- descrizione -->
-        <div class="container my-3" v-if="store.italianDetails.overview != ''">
+        <div class="container my-3 animate" v-if="store.italianDetails.overview != ''">
 
             <p>{{ store.italianDetails.overview }}</p>
 
@@ -27,7 +27,7 @@
 
         <div class="container">
 
-            <div class="container my-3 rounded-3 border border-2 border-warning">
+            <div class="container my-3 rounded-3 border border-2 border-warning animate">
                 <div class="text-end" v-if="exsist">
 
                     <!-- free -->
@@ -48,17 +48,20 @@
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
             </div>
 
-            <Seasons v-if="store.italianDetails.seasons"/>
-
+            
+            <Seasons v-if="store.italianDetails.seasons" class="animate"/>
         </div>
 
-        <DetailsComponent :id="id" v-if="store.italianDetails && id"/>
+        <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate"/>
 
-        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested"/>
+        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested" class="animate"/>
 
 
 
     </main>
+    <div v-if="!store.isPageReady" class="d-flex justify-content-center align-items-center vh-100">
+        <Loader/>
+    </div>
 
 
 
@@ -70,6 +73,7 @@ import Loader from '../components/Loader.vue';
 import Recommendations from '../components/Recommendations.vue';
 import Seasons from '../components/Seasons.vue';
 import ServicesView from '../components/ServicesView.vue';
+import AnimateOnScroll from '../functions/AnimateOnScroll';
 import CallApi from '../functions/CallApi';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
@@ -87,6 +91,8 @@ export default {
             suggested: null,
             isLoaded: false,
             id: null,
+
+
 
         }
     },
@@ -106,6 +112,12 @@ export default {
         this.exsist = false;
         this.suggested = null;
 
+    },
+    beforeRouteLeave(to, from, next) {
+        store.isPageReady = false;
+        setTimeout(() => {
+            next();
+        },500);
     },
     methods: {
         getImagePath(img) {
@@ -265,8 +277,8 @@ export default {
     },
     watch: {
         '$route.query': {
-            handler(newQuery, oldQuery) {
-
+            async handler(newQuery, oldQuery) {
+                // 
                 store.details = null;
                 store.italianDetails = null;
                 this.subscription = [];
@@ -274,7 +286,9 @@ export default {
                 this.buy = [];
                 this.exsist = false;
                 this.suggested = null;
-                this.createPage();
+                await this.createPage();
+                AnimateOnScroll();
+                store.isPageReady = true;
 
             },
             deep: true,
@@ -318,6 +332,9 @@ export default {
     align-items: end;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #1f1f1f 100%);
 }
+main {
+    transition: all 0.5s ease;
+}
 
 @media screen and (max-width: 768px) {
     .overlay {
@@ -331,12 +348,5 @@ export default {
     }
 }
 
-
-
-
-.slide-enter-active.slide-enter-to {
-
-    transition-delay: 1s;
-}
 
 </style>

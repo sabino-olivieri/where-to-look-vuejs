@@ -43,18 +43,13 @@ body {
     }
 }
 
-.slide-enter-active,
-.slide-leave-active {
-    transition: transform 0.8s ease;
-    // position: fixed;
+
+.animate {
+    will-change: transform, opacity;
 }
 
-.slide-enter-from {
-    transform: translateX(100%);
-}
-
-.slide-leave-to {
-    transform: translateX(-100%);
+.hidden-animation {
+    transform: translate(100%);
 }
 
 #app {

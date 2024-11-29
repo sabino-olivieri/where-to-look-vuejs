@@ -1,14 +1,12 @@
 <template>
-  <transition name="slide">
 
-    <main>
-  
-      <BigCarousel :slides="store.show" v-if="store.show.shows" />
-      <MovieCarousel title="Film" :slides="store.movies"  v-if="store.movies.shows"/>
-      <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows"/>
-  
-    </main>
-  </transition>
+  <main :class="!store.isPageReady ? 'hidden-animation' : ''">
+
+    <BigCarousel :slides="store.show" v-if="store.show.shows" class="animate" />
+    <MovieCarousel title="Film" :slides="store.movies" v-if="store.movies.shows" class="animate" />
+    <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows" class="animate" />
+
+  </main>
 
 </template>
 
@@ -18,6 +16,7 @@ import MovieCarousel from '../components/MovieCarousel.vue';
 import CallApi from '../functions/CallApi';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
+import AnimateOnScroll from '../functions/AnimateOnScroll';
 
 export default {
   data() {
@@ -37,11 +36,11 @@ export default {
     if (!store.show.shows) {
 
       const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, params);
-      if(resp) {
+      if (resp) {
         store.show = resp;
       } else if (!store.show.shows) {
         await this.CallDefault('all', store.show)
-        
+
       }
 
 
@@ -55,11 +54,11 @@ export default {
         'show_type': 'movie'
       });
 
-      if(resp) {
+      if (resp) {
         store.movies = resp;
       } else if (!store.movies.shows) {
         await this.CallDefault('movie', store.movies)
-        
+
       }
     }
 
@@ -71,35 +70,50 @@ export default {
         'show_type': 'series'
       });
 
-      if(resp) {
+      if (resp) {
         store.series = resp;
       } else if (!store.series.shows) {
-        await this.CallDefault('tv',store.series)
-        
+        await this.CallDefault('tv', store.series)
+
       }
 
     }
   },
+
   methods: {
     async CallDefault(search, storeArray) {
       const resp = await CallApi(`https://api.themoviedb.org/3/trending/${search}/week`, {}, {
-    language: 'it-IT',
-    api_key: import.meta.env.VITE_KEY_MOVIEDB
-  });
+        language: 'it-IT',
+        api_key: import.meta.env.VITE_KEY_MOVIEDB
+      });
 
-  const array = await Promise.all(
-    resp.results.map(async (elem) => {
-      return await TransformObject(elem);
-    })
-  );
-    
-  storeArray.shows = array;
-  
+      const array = await Promise.all(
+        resp.results.map(async (elem) => {
+          return await TransformObject(elem);
+        })
+      );
+
+      storeArray.shows = array;
+
     }
-  }
+  },
+  mounted() {
+    AnimateOnScroll();
+    store.isPageReady = true;
+  },
+  beforeRouteLeave(to, from, next) {
+        store.isPageReady = false;
+        setTimeout(() => {
+            next();
+        },500);
+    },
 
 }
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+main {
+  transition: transform 0.5s ease;
+}
+</style>

@@ -1,52 +1,56 @@
 <template>
-    <div class="container p-0 my-3 rounded-3 border border-2 border-warning" id="seasons"
-        :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }">
+    <div class="container p-0 my-3 rounded-3 border border-2 border-warning" 
+        >
+        
+        <div :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }" id="seasons">
 
-        <div class="accordion" id="accordionSeason">
-            <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
-                v-for="(season, index) in store.italianDetails.seasons" :key="index">
-                <h2 class="accordion-header" @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        :data-bs-target="'#collapseSeason' + index" aria-expanded="true"
-                        :aria-controls="'collapseSeason' + index">
-                        {{ season.name }}
-                    </button>
-                </h2>
-                <div :id="'collapseSeason' + index" class="accordion-collapse collapse"
-                    data-bs-parent="#accordionSeason">
-                    <div class="accordion-body">
-                        <div class="accordion" :id="'accordionEpisode' + index" v-if="store.season">
-                            <div class="accordion-item" v-for="episode in store.season.episodes"
-                                :key="episode.episode_number">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        :data-bs-target="'#collapseEpisode' + episode.episode_number"
-                                        aria-expanded="true"
-                                        :aria-controls="'collapseEpisode' + episode.episode_number">
-                                        Episodio: {{ episode.episode_number }} - {{ episode.name }}
-                                    </button>
-                                </h2>
-                                <div :id="'collapseEpisode' + episode.episode_number"
-                                    class="accordion-collapse collapse" :data-bs-parent="'#accordionEpisode' + index">
-                                    <div class="accordion-body">
-                                        {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile'
-                                        }}
+            <div class="accordion" id="accordionSeason">
+                <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
+                    v-for="(season, index) in store.italianDetails.seasons" :key="index">
+                    <h2 class="accordion-header" @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            :data-bs-target="'#collapseSeason' + index" aria-expanded="true"
+                            :aria-controls="'collapseSeason' + index">
+                            {{ season.name }}
+                        </button>
+                    </h2>
+                    <div :id="'collapseSeason' + index" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionSeason">
+                        <div class="accordion-body">
+                            <div class="accordion" :id="'accordionEpisode' + index" v-if="store.season">
+                                <div class="accordion-item" v-for="episode in store.season.episodes"
+                                    :key="episode.episode_number">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            :data-bs-target="'#collapseEpisode' + episode.episode_number"
+                                            aria-expanded="true"
+                                            :aria-controls="'collapseEpisode' + episode.episode_number">
+                                            Episodio: {{ episode.episode_number }} - {{ episode.name }}
+                                        </button>
+                                    </h2>
+                                    <div :id="'collapseEpisode' + episode.episode_number"
+                                        class="accordion-collapse collapse" :data-bs-parent="'#accordionEpisode' + index">
+                                        <div class="accordion-body">
+                                            {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile'
+                                            }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="d-flex h-100 w-100 justify-content-center align-items-center text-black p-3" v-else>
-                            <Loader />
+    
+                            <div class="d-flex h-100 w-100 justify-content-center align-items-center text-black p-3" v-else>
+                                <Loader />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Bottone "Mostra Altro / Riduci" -->
+            <button class="btn btn-warning toggle-button" @click="toggleContainer" v-if="hasMaxHeight">
+                {{ isExpanded ? 'Riduci' : 'Mostra altro' }}
+            </button>
         </div>
-        <!-- Bottone "Mostra Altro / Riduci" -->
-        <button class="btn btn-warning toggle-button" @click="toggleContainer" v-if="hasMaxHeight">
-            {{ isExpanded ? 'Riduci' : 'Mostra altro' }}
-        </button>
+
     </div>
 </template>
 
@@ -108,7 +112,7 @@ export default {
                 },500);
 
                 this.maxH = 200;
-                const seasonElem = document.getElementById('seasons');
+                const seasonElem = document.getElementById('accordionSeason');
 
                 if (seasonElem && seasonElem.offsetHeight > 200) {
                     this.hasMaxHeight = true;
@@ -170,10 +174,13 @@ export default {
 <style lang="scss" scoped>
 .container {
 
-    transition: all 0.5s ease;
+    
     overflow: hidden;
     position: relative;
 
+    #seasons {
+        transition: all 0.5s ease;
+    }
 
     .toggle-button {
         position: absolute;
@@ -184,6 +191,7 @@ export default {
 
 
     .accordion {
+    
         --bs-accordion-bg: transparent;
         --bs-accordion-color: var(--color-body);
         --bs-accordion-btn-color: var(--color-body);
