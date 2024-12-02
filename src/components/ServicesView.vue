@@ -1,5 +1,5 @@
 <template>
-    <div class=" p-3 d-flex gp-3 " v-if="arrStream.length > 0">
+    <div class=" p-3 d-flex gp-3 " v-if="arrStream.length > 0" id="service-view">
         <span class="label px-1 py-2 rounded-3 bg-warning text-center me-3">{{ title }}</span>
 
         <div class="d-flex flex-wrap gap-2 align-items-center">

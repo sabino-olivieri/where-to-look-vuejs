@@ -1,7 +1,8 @@
 <template>
     <main :class="!store.isPageReady ? 'hidden-animation' : ''" v-if="store.details && store.italianDetails">
 
-        <div class="hero d-flex justify-content-center justify-content-lg-end align-items-center position-relative animate">
+        <div
+            class="hero d-flex justify-content-center justify-content-md-end align-items-center position-relative animate">
 
             <div class="overlay">
 
@@ -13,8 +14,21 @@
                 <Loader v-if="!isLoaded" />
             </div>
 
-            <div class="ms_title p-3">
-                <h1 class="m-0 mb-lg-5 p-lg-2">{{ store.italianDetails.title ?? store.italianDetails.name }}</h1>
+            <div class="ms_title tx-white justify-content-lg-center justify-content-end p-3">
+                <h1 class="m-0 mb-md-4">{{ store.italianDetails.title ?? store.italianDetails.name }}</h1>
+                <div class="d-none d-md-flex gap-2 mb-3">
+                    <button @click="scrollTo('service-container')"
+                        class="btn btn-light rounded-3 fs-5 fw-semibold py-2 px-3">
+                        <span> Dove guardare </span>
+                    </button>
+
+                    <button @click="scrollTo('details-container')"
+                        class="btn btn-secondary rounded-3 fs-5 fw-semibold py-2 px-3">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span> Altre info </span>
+                    </button>
+
+                </div>
             </div>
 
         </div>
@@ -28,7 +42,7 @@
 
         <div class="container">
 
-            <div class="container my-3 rounded-3 border border-2 border-warning animate">
+            <div class="container my-3 rounded-3 border border-2 border-warning animate" id="service-container">
                 <div class="text-end" v-if="exsist">
 
                     <!-- free -->
@@ -174,8 +188,21 @@ export default {
         },
         async callVideos(id) {
             const resp = await CallApi(`https://api.themoviedb.org/3/${id}/videos`, {}, store.objPramsMovieDB);
-            this.video = resp && resp.results && resp.results.length > 0 ? resp.results[0] : null;
-            console.log(this.video);
+            if (resp && resp.results) {
+
+
+                resp.results.some((element) => {
+                    if (element.type === "Trailer") {
+                        this.video = element;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+            }
+            // this.video = resp && resp.results && resp.results.length > 0 ? resp.results[0] : null;
+            console.log(resp);
 
         },
         async createPage() {
@@ -274,6 +301,17 @@ export default {
                 behavoir: 'smooth'
             })
 
+        },
+
+        scrollTo(whereScroll) {
+            const element = document.querySelector(`#${whereScroll}`);
+            const navbar = document.querySelector('.navbar');
+            if (element) {
+                const navbarHeight = navbar ? navbar.offsetHeight : 0;
+                const elementPosition = element.getBoundingClientRect().top - 10;
+                const scrollPosition = elementPosition - navbarHeight;
+                window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            }
         }
 
     },
@@ -288,6 +326,7 @@ export default {
                 this.buy = [];
                 this.exsist = false;
                 this.suggested = null;
+                this.video = null;
                 await this.createPage();
                 AnimateOnScroll();
                 store.isPageReady = true;
@@ -307,16 +346,15 @@ export default {
     height: 100%;
     top: 0;
     left: 0;
-    // background: radial-gradient(circle, rgba(31, 31, 31, 0) 50%, rgba(31, 31, 31, 1) 68%, rgba(31, 31, 31, 1) 100%);
-    background: linear-gradient(-90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,1) 75%, rgba(31,31,31,1) 100%);
+    background: linear-gradient(-90deg, rgba(31, 31, 31, 0) 40%, rgba(31, 31, 31, 1) 78%, rgba(31, 31, 31, 1) 100%);
 }
+
 
 .ms_img {
     aspect-ratio: 16/9;
     overflow: hidden;
-    // max-height: 720px;
-    max-width: 100%;
-    
+    max-width: 85%;
+
 
     img {
         width: 100%;
@@ -332,8 +370,9 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    flex-direction: column;
     display: flex;
-    align-items: end;
+    // justify-content: center;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #1f1f1f 100%);
 }
 
@@ -348,7 +387,7 @@ main {
 
     .ms_img {
         min-height: 350px;
-        aspect-ratio: 16/5;      
+        aspect-ratio: 16/5;
         max-width: 100%;
 
     }

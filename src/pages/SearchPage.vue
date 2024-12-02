@@ -147,6 +147,7 @@ export default {
     max-height: 300px;
     background-color: var(--bg-card);
     transition: box-shadow 0.5s ease;
+    cursor: pointer;
 
     img {
         transition: transform 0.5s ease;

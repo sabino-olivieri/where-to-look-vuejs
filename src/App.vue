@@ -2,19 +2,16 @@
   <NavbarHeader />
 
     <router-view></router-view>
-    <!-- <router-view v-slot="{ Component }">
-      <transition name="slide" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view> -->
+  <ThemeSwitcher/>
 
 </template>
 
 <script>
 import NavbarHeader from './components/NavbarHeader.vue'
+import ThemeSwitcher from './components/ThemeSwitcher.vue'
 
 export default {
-  components: { NavbarHeader },
+  components: { NavbarHeader, ThemeSwitcher },
   data() {
     return {
       

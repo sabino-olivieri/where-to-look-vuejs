@@ -7,10 +7,10 @@
             <!-- <div class="d-flex gap-2"> -->
 
 
-            <span class="d-flex justify-content-center align-items-center border border-2 navbar-toggler d-lg-none" type="button"
+            <span class="d-flex justify-content-center align-items-center border border-2 navbar-toggler d-lg-none " type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                 aria-label="Toggle navigation" @click="toggleMenu">
-                <i class="fa-solid fa-bars">
+                <i class="fa-solid fa-bars tx-white">
                 </i>
             </span>
             <div class="collapse navbar-collapse" id="navbarNav">

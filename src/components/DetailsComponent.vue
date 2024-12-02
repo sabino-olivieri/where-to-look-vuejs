@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="details-container">
 
         <div class="container my-3 rounded-3 border border-2 border-warning p-3">
             <!-- genere -->

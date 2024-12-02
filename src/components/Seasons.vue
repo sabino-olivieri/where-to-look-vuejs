@@ -1,6 +1,5 @@
 <template>
-    <div class="container p-0 my-3 rounded-3 border border-2 border-warning" 
-        >
+    <div class="container p-0 my-3 rounded-3 border border-2 border-warning">
         
         <div :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }" id="seasons">
 
@@ -103,16 +102,20 @@ export default {
                     accordions.forEach(accordion => {
                         accordion.classList.remove('show');
                     });
-                },500);
 
-                this.maxH = 200;
+                    this.maxH = 200;
                 const seasonElem = document.getElementById('accordionSeason');
 
                 if (seasonElem && seasonElem.offsetHeight > 200) {
+                    console.log(seasonElem.offsetHeight,'maxH');
+                    
                     this.hasMaxHeight = true;
                 } else {
                     this.hasMaxHeight = false;
                 }
+                },500);
+
+
 
             } else {
                 this.maxH = this.accordionH;
