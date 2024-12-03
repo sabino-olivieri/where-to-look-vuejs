@@ -1,12 +1,13 @@
 <template>
     <div class="container p-0 my-3 rounded-3 border border-2 border-warning">
-        
+
         <div :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }" id="seasons">
 
             <div class="accordion" id="accordionSeason">
                 <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
                     v-for="(season, index) in store.italianDetails.seasons" :key="index">
-                    <h2 class="accordion-header" @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
+                    <h2 class="accordion-header"
+                        @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             :data-bs-target="'#collapseSeason' + index" aria-expanded="true"
                             :aria-controls="'collapseSeason' + index">
@@ -20,7 +21,8 @@
                                 <div class="accordion-item" v-for="episode in store.season.episodes"
                                     :key="episode.episode_number">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse"
                                             :data-bs-target="'#collapseEpisode' + episode.episode_number"
                                             aria-expanded="true"
                                             :aria-controls="'collapseEpisode' + episode.episode_number">
@@ -28,16 +30,17 @@
                                         </button>
                                     </h2>
                                     <div :id="'collapseEpisode' + episode.episode_number"
-                                        class="accordion-collapse collapse" :data-bs-parent="'#accordionEpisode' + index">
+                                        class="accordion-collapse collapse"
+                                        :data-bs-parent="'#accordionEpisode' + index">
                                         <div class="accordion-body">
-                                            {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile'
-                                            }}
+                                            {{ episode.overview != '' ? episode.overview : 'Nessuna descrizione disponibile' }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-    
-                            <div class="d-flex h-100 w-100 justify-content-center align-items-center text-black p-3" v-else>
+
+                            <div class="d-flex h-100 w-100 justify-content-center align-items-center text-black p-3"
+                                v-else>
                                 <Loader />
                             </div>
                         </div>
@@ -68,7 +71,7 @@ export default {
             maxH: 200,
             accordionH: 0,
             resizeObserver: null,
-            seasonTopPosition: 0
+            seasonTopPosition: null
         };
     },
     methods: {
@@ -83,13 +86,16 @@ export default {
         },
         toggleContainer() {
             this.isExpanded = !this.isExpanded;
-
+            
             if (!this.isExpanded) {
+                
+                const seasonElem = document.querySelector('#seasons');                       
+                this.seasonTopPosition = seasonElem.getBoundingClientRect().top + window.scrollY - 100;
 
                 window.scrollTo({
-                top: this.seasonTopPosition,
-                behavoir: 'smooth'
-            })
+                    top: this.seasonTopPosition,
+                    behavoir: 'smooth'
+                })
 
                 // Chiude tutti gli accordion
                 const buttons = document.querySelectorAll('.accordion-button');
@@ -104,16 +110,16 @@ export default {
                     });
 
                     this.maxH = 200;
-                const seasonElem = document.getElementById('accordionSeason');
+                    const seasonElem = document.getElementById('accordionSeason');
 
-                if (seasonElem && seasonElem.offsetHeight > 200) {
-                    console.log(seasonElem.offsetHeight,'maxH');
-                    
-                    this.hasMaxHeight = true;
-                } else {
-                    this.hasMaxHeight = false;
-                }
-                },500);
+                    if (seasonElem && seasonElem.offsetHeight > 200) {
+                        console.log(seasonElem.offsetHeight, 'maxH');
+
+                        this.hasMaxHeight = true;
+                    } else {
+                        this.hasMaxHeight = false;
+                    }
+                }, 500);
 
 
 
@@ -144,9 +150,6 @@ export default {
     },
     mounted() {
         const seasonElem = document.getElementById('seasons');
-        const rect = seasonElem.getBoundingClientRect();
-        this.seasonTopPosition = rect.top;
-        
 
         if (seasonElem && seasonElem.offsetHeight === 200) {
             this.hasMaxHeight = true;
@@ -171,7 +174,7 @@ export default {
 <style lang="scss" scoped>
 .container {
 
-    
+
     overflow: hidden;
     position: relative;
 
@@ -188,7 +191,7 @@ export default {
 
 
     .accordion {
-    
+
         --bs-accordion-bg: transparent;
         --bs-accordion-color: var(--color-body);
         --bs-accordion-btn-color: var(--color-body);
@@ -214,6 +217,4 @@ export default {
         }
     }
 }
-
-
 </style>

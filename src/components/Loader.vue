@@ -8,11 +8,10 @@
 }
 
 .loader .circle {
-    --color: #f1f1f1;
     --dim: 1.2rem;
     width: var(--dim);
     height: var(--dim);
-    background-color: var(--color);
+    background-color: var(--color-body);
     border-radius: 50%;
     position: absolute;
 }
