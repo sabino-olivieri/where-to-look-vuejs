@@ -6,6 +6,7 @@
             <div class="accordion" id="accordionSeason">
                 <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
                     v-for="(season, index) in store.italianDetails.seasons" :key="index">
+                    <div v-if="season.name != 'Speciali'">
                     <h2 class="accordion-header"
                         @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -45,6 +46,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
             <!-- Bottone "Mostra Altro / Riduci" -->
@@ -113,7 +115,6 @@ export default {
                     const seasonElem = document.getElementById('accordionSeason');
 
                     if (seasonElem && seasonElem.offsetHeight > 200) {
-                        console.log(seasonElem.offsetHeight, 'maxH');
 
                         this.hasMaxHeight = true;
                     } else {

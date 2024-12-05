@@ -23,7 +23,7 @@ export default function AnimateOnScroll(options = {}) {
                 trigger: element,
                 start: "top 95%",
                 end: "bottom 20%",
-                toggleActions: "play none none none", // Cambia a "play reverse play reverse" se serve
+                toggleActions: "play none none reverse", // Cambia a "play reverse play reverse" se serve
             },
             x: 200,
             opacity: 0,

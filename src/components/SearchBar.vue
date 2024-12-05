@@ -1,6 +1,6 @@
 <template>
     <div class="search-container" :class="!isLarge ? 'hidden-container' : ''">
-        <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : ''" @keypress.enter="submitSearch"  />
+        <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : 'p-1'" @keypress.enter="submitSearch"  />
         <button @click="submitSearch" class="search-button">
             <i class="fas fa-search tx-white"></i>
         </button>
@@ -51,7 +51,7 @@ export default {
     // padding-right: 0px;
     padding-left: 5px;
     max-width: 100%;
-    transition: max-width 0.5s;
+    transition: all 0.5s;
 }
 
 .search-input {
@@ -59,8 +59,8 @@ export default {
     outline: none;
     background-color: transparent;
     max-width: 250px;
-    transition: max-width 0.5s;
-
+    transition: all 0.5s;
+    padding: 0;
     &::placeholder {
         color: #f1f1f1;
     }

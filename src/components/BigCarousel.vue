@@ -9,11 +9,12 @@
                 pauseOnMouseEnter: true
             }" class="mySwiper">
             <swiper-slide v-for="(slide, index) in slides.shows" :key="index">
-                <div class="slide-content d-flex justify-content-center align-items-center">
+                <router-link :to="{ name: 'details', params: { id: slide.tmdbId } }">
+                <div class="slide-content d-flex justify-content-center justify-content-md-end align-items-center" @click="detailsCahnge(slide)">
                     <div class="overlay">
 
                     </div>
-                    <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title" class="slide-image" @load="handleImageLoad(index)" v-show="slideIndex[index]" >
+                    <img :src="slide.imageSet.horizontalPoster.w1080" :alt="slide.title" class="slide-image" @load="handleImageLoad(index)" v-show="slideIndex[index]" >
                     <div class="slide-image d-flex align-items-center justify-content-center" v-if="!slideIndex[index]">
                         <Loader/>
                     </div>
@@ -30,6 +31,7 @@
                         </div>
                     </div>
                 </div>
+            </router-link>
             </swiper-slide>
         </swiper>
     </div>
@@ -76,6 +78,10 @@ export default {
         },
         handleImageLoad(index) {
             this.slideIndex[index] = true;
+        },
+        detailsCahnge(slide) {
+            store.details = slide;
+
         }
     },
     created() {
@@ -97,7 +103,7 @@ export default {
     height: 100%;
     top: 0;
     left: 0;
-    background: radial-gradient(circle, rgba(31,31,31,0) 50%, rgba(31,31,31,1) 68%, rgba(31,31,31,1) 100%);
+    background: linear-gradient(-90deg, #1f1f1f00 40%, #1f1f1f 78%, rgba(31, 31, 31, 1) 100%);
 }
 
 .carousel-container {
@@ -121,7 +127,7 @@ export default {
 
 .slide-image {
     width: 80%;
-    aspect-ratio: 16/5;
+    aspect-ratio: 16/9;
     min-height: 500px;
     object-fit: cover;
 }
@@ -133,11 +139,12 @@ export default {
     right: 0;
     background: linear-gradient(0deg, #1f1f1f 15%, #1f1f1f00 100%);
     color: white;
-    padding: 20px 30PX;
+    padding: 40px 30PX;
 }
 
 .slide-caption h3 {
-    margin: 0;
+    margin-bottom: 0;
+    width: 30%;
     font-size: 24px;
     opacity: 0;
     transform: translateY(50px);
@@ -220,6 +227,10 @@ export default {
 
 :deep(.swiper-pagination) {
     display: none;
+}
+
+.slide-caption h3 {
+    width: 90%;
 }
 
 }

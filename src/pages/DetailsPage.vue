@@ -114,12 +114,6 @@ export default {
 
         }
     },
-    created() {
-
-
-        // this.createPage()
-
-    },
 
     beforeUnmount() {
         store.details = null;
@@ -144,9 +138,9 @@ export default {
 
                 return new URL("https://image.tmdb.org/t/p/w1280" + img, import.meta.url).href;
 
-            } else if (store.details.imageSet.horizontalPoster.w720) {
+            } else if (store.details.imageSet.horizontalPoster.w1080) {
 
-                return new URL(store.details.imageSet.horizontalPoster.w720, import.meta.url).href;
+                return new URL(store.details.imageSet.horizontalPoster.w1080, import.meta.url).href;
 
             } else {
 
@@ -201,8 +195,6 @@ export default {
                 });
 
             }
-            // this.video = resp && resp.results && resp.results.length > 0 ? resp.results[0] : null;
-            console.log(resp);
 
         },
         async createPage() {
@@ -318,9 +310,12 @@ export default {
     watch: {
         '$route.query': {
             async handler(newQuery, oldQuery) {
-                // 
-                store.details = null;
-                store.italianDetails = null;
+                const id = this.$route.params.id;
+                const idMovieDB = id.split('/')[1];
+
+                
+                store.details = store.details && store.details.tmdbId && store.details.tmdbId != id ? null : store.details;
+                store.italianDetails = store.italianDetails && store.italianDetails.id && store.italianDetails.id != idMovieDB ? null : store.italianDetails;
                 this.subscription = [];
                 this.rent = [];
                 this.buy = [];
@@ -374,6 +369,10 @@ export default {
     display: flex;
     // justify-content: center;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #1f1f1f 100%);
+
+    h1 {
+        width: 40%;
+    }
 }
 
 main {
