@@ -42,7 +42,7 @@
 
         <div class="container">
 
-            <div class="container my-3 rounded-3 border border-2 border-warning animate" id="service-container">
+            <div class="container my-3 rounded-3 border border-2 ms_border animate" id="service-container">
                 <div class="text-end" v-if="exsist">
 
                     <!-- free -->
@@ -70,7 +70,7 @@
 
         <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate" />
 
-        <Recommendations :title="'Suggeriti'" :slides="suggested" v-if="suggested" class="animate" />
+        <MovieCarousel title="Suggeriti" :slides="suggested.results" v-if="suggested" class="animate" />
 
 
 
@@ -86,17 +86,18 @@
 <script>
 import DetailsComponent from '../components/DetailsComponent.vue';
 import Loader from '../components/Loader.vue';
-import Recommendations from '../components/Recommendations.vue';
+import MovieCarousel from '../components/MovieCarousel.vue';
 import Seasons from '../components/Seasons.vue';
 import ServicesView from '../components/ServicesView.vue';
 import Videos from '../components/Videos.vue';
 import AnimateOnScroll from '../functions/AnimateOnScroll';
 import CallApi from '../functions/CallApi';
+import ScrollTop from '../functions/ScrollTop';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 
 export default {
-    components: { ServicesView, Recommendations, Seasons, Loader, DetailsComponent, Videos },
+    components: { ServicesView, Seasons, Loader, DetailsComponent, Videos, MovieCarousel },
     data() {
         return {
             store,
@@ -127,7 +128,10 @@ export default {
 
     },
     beforeRouteLeave(to, from, next) {
+        console.log('route leave');
+        
         store.isPageReady = false;
+        
         setTimeout(() => {
             next();
         }, 500);
@@ -288,10 +292,7 @@ export default {
 
             this.callVideos(id);
 
-            window.scrollTo({
-                top: 0,
-                behavoir: 'smooth'
-            })
+            ScrollTop();
 
         },
 
@@ -310,6 +311,8 @@ export default {
     watch: {
         '$route.query': {
             async handler(newQuery, oldQuery) {
+                store.isPageReady = false;
+                
                 const id = this.$route.params.id;
                 const idMovieDB = id.split('/')[1];
 

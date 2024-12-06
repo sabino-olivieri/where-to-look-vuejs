@@ -126,7 +126,7 @@ export default {
 }
 
 .slide-image {
-    width: 80%;
+    width: 85%;
     aspect-ratio: 16/9;
     min-height: 500px;
     object-fit: cover;

@@ -1,7 +1,7 @@
 <template>
     <div class="search-container" :class="!isLarge ? 'hidden-container' : ''">
-        <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : 'p-1'" @keypress.enter="submitSearch"  />
-        <button @click="submitSearch" class="search-button">
+        <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : 'p-1 ps-2'" @keypress.enter="submitSearch"  />
+        <button @click="submitSearch" class="search-button bg-ms_warning">
             <i class="fas fa-search tx-white"></i>
         </button>
     </div>
@@ -40,16 +40,16 @@ export default {
     position: absolute;
     transform: translateY(-50%);
     top: 33px;
+
     // top:50%;
     right: 55px;
     display: flex;
     align-items: center;
     background-color: transparent;
+    backdrop-filter: blur(4px);
+
     border: 2px solid #f1f1f1;
     border-radius: 20px;
-    // padding: 5px 12px;
-    // padding-right: 0px;
-    padding-left: 5px;
     max-width: 100%;
     transition: all 0.5s;
 }
@@ -74,7 +74,6 @@ export default {
     border: 2px solid transparent;
 }
 .search-button {
-    background-color: #ffc107;
     border: none;
     border-radius: 50%;
     width: 38px;

@@ -5,7 +5,7 @@
             <div class="col-12 col-md-6 col-lg-4 animate" v-for="result, index in results.results" :key="result"
                 @click="italianDetailsChange(result)">
 
-                <div class="cntainer-fluid ms_card border-warning h-100 rounded-3">
+                <div class="ms_card ms_border h-100 rounded-3">
                     <div class="row h-100 g-0">
                         <div
                             class="col-5 col-sm-6 h-100 d-flex justify-content-center align-items-center overflow-hidden rounded-start-3">
@@ -16,7 +16,7 @@
                         <div class="col-7 col-sm-6 h-100">
                             <div class="card-body h-100 p-3 overflow-hidden">
                                 <h5 class="mb-0">{{ result.title ?? result.name }}</h5>
-                                <p class="border-bottom py-2 mb-4 border-warning">
+                                <p class="border-bottom py-2 mb-4 ms_border">
                                     {{ result.release_date ? result.release_date.split('-')[0] : '' }}{{
                                         result.first_air_date ? result.first_air_date.split('-')[0] : '' }}
                                     {{ (result.release_date || result.first_air_date) && result.vote_average &&
@@ -34,7 +34,7 @@
 
         </div>
         <div class="row m-2" v-else>
-            <h2 class="text-center p-5 border border-1 rounded-3 border-warning mb-0">Nessun risultato utile per "{{
+            <h2 class="text-center p-5 border border-1 rounded-3 ms_border mb-0">Nessun risultato utile per "{{
                 title }}"</h2>
         </div>
 

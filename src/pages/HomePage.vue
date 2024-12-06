@@ -3,8 +3,8 @@
   <main :class="!store.isPageReady ? 'hidden-animation' : ''">
 
     <BigCarousel :slides="store.show" v-if="store.show.shows" class="animate" />
-    <MovieCarousel title="Film" :slides="store.movies" v-if="store.movies.shows" class="animate" />
-    <MovieCarousel title="Serie" :slides="store.series" v-if="store.series.shows" class="animate" />
+    <MovieCarousel title="Film" :slides="store.movies.shows" v-if="store.movies.shows" class="animate" />
+    <MovieCarousel title="Serie" :slides="store.series.shows" v-if="store.series.shows" class="animate" />
 
   </main>
 
@@ -17,6 +17,7 @@ import CallApi from '../functions/CallApi';
 import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 import AnimateOnScroll from '../functions/AnimateOnScroll';
+import ScrollTop from '../functions/ScrollTop';
 
 export default {
   data() {
@@ -27,6 +28,8 @@ export default {
   components: { BigCarousel, MovieCarousel },
 
   async created() {
+
+    ScrollTop();
 
     const params = {
       'country': 'it',

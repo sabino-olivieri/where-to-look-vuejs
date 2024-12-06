@@ -1,6 +1,6 @@
 <template>
-    <div class="carousel-container mb-4 px-3" v-if="slides.shows">
-        <h2 class="">{{ title }}</h2>
+    <div class="carousel-container mb-4 px-3" v-if="slides">
+        <h2 class="carousel-title">{{ title }}</h2>
         <swiper ref="mySwiper" :modules="[Navigation, Autoplay, Virtual, EffectFade]" :breakpoints="{
             320: {
                 slidesPerView: 1.1,
@@ -28,29 +28,31 @@
             disableOnInteraction: false,
             pauseOnMouseEnter: true
         }" class="mySwiper py-5 rounded-3" @transitionEnd="changeFirstSlide()">
-            <swiper-slide v-for="(slide, index) in slides.shows" :key="index" :class="'swiper-slide-' + title"
+            <swiper-slide v-for="(slide, index) in newSlides ?? slides" :key="index" :class="'swiper-slide-' + title"
                 :id="'movie' + index">
-                <router-link :to="{ name: 'details', params: { id: slide.tmdbId } }">
+
                     <div class="slide-content rounded-3" @click="detailsCahnge(slide)">
-                        <img :src="slide.imageSet.horizontalPoster.w720" :alt="slide.title"
+                        <img :src="getImagePath(slide)" :alt="slide.title"
                             class="slide-image rounded-3" v-show="slideIndex[index]" @load="handleImageLoad(index)">
                         <div class="slide-image d-flex justify-content-center align-items-center"
                             v-if="!slideIndex[index]">
                             <Loader />
                         </div>
                         <div class="slide-caption rounded-3">
-                            <h6 class="mb-3">{{ slide.title }}</h6>
-                            <div class="d-flex gap-2">
+                            <h6 class="mb-3">{{ slide.title ?? slide.name }}</h6>
+                            <div class="d-flex gap-2" v-if="slide.streamingOptions">
                                 <div class="logos d-flex align-items-center justify-content-center flex-column rounded-3 p-1"
-                                    v-for="stream in slide.streamingOptions.it" :key="stream"
+                                    v-for="stream in slide.streamingOptions.it" :key="stream" 
                                     :style="{ backgroundColor: stream.service.themeColorCode }">
+                                    
                                     <img :src="stream.service.imageSet.whiteImage" class="" alt="">
                                     <span class="addon" v-if="stream.type === 'addon'">Addon</span>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </router-link>
+
             </swiper-slide>
         </swiper>
     </div>
@@ -89,12 +91,25 @@ export default {
             EffectFade,
             store,
             slideIndex: [],
-            firstSlide: null
+            firstSlide: null,
+            newSlides: null
             // activeFirstVisibleSlideIndex: 0,
             // swiperInstance: null
         }
     },
     created() {
+
+        if(this.title === 'Suggeriti') {
+            const newArray = this.slides.filter((slide)=> {
+                return slide.backdrop_path;
+            });
+
+            if(newArray.length != this.slides.length) {
+                this.newSlides = newArray;
+            }
+            
+        }
+
         if (this.slides.shows) {
             this.slides.shows.forEach(() => {
                 this.slideIndex.push(false)
@@ -108,7 +123,22 @@ export default {
     },
     methods: {
         detailsCahnge(slide) {
-            store.details = slide;
+            if(this.title != 'Suggeriti') {
+                store.details = slide;
+            }
+
+            store.isPageReady = false;            
+
+            setTimeout(()=> {
+
+            this.$router.push({
+                name: 'details',
+                params: {
+                    id: slide.tmdbId ?? `${slide.media_type}/${slide.id}`
+                }
+            });
+            },500)
+
         },
         handleImageLoad(index) {
             this.slideIndex[index] = true;
@@ -125,10 +155,27 @@ export default {
             if (firstSlideVisibleElem) {
                 this.firstSlide = firstSlideVisibleElem;
                 firstSlideVisibleElem.classList.add('first-visible-slide');
-                console.log(firstSlideVisibleElem);
 
             }
 
+        },
+
+        getImagePath(slide) {
+            if (slide.imageSet) {
+                return new URL(slide.imageSet.horizontalPoster.w720, import.meta.url).href;
+            } else if (slide.backdrop_path) {
+
+                return new URL("https://image.tmdb.org/t/p/w342" + slide.backdrop_path, import.meta.url).href;
+
+            } else if (slide.poster_path) {
+
+                return new URL("https://image.tmdb.org/t/p/w342" + slide.poster_path, import.meta.url).href;
+
+            } else {
+
+
+                return `https://placehold.co/600x400?text=${slide.title}`;
+            }
         }
 
 
@@ -140,6 +187,11 @@ export default {
 
 <style lang="scss" scoped>
 .carousel-container {
+
+    .carousel-title {
+        margin-bottom: -20px;
+    }
+    
     width: 100%;
     margin: 0 auto;
     position: relative;
@@ -166,25 +218,26 @@ export default {
 
 
 .swiper-slide-visible:hover {
-        .slide-content {
+    .slide-content {
 
-            transform: scale(120%);
-            z-index: 9999;
-            .slide-caption {
-                animation: slideUp 0.8s ease forwards;
-            }
+        transform: scale(120%);
+        z-index: 9999;
+
+        .slide-caption {
+            animation: slideUp 0.8s ease forwards;
         }
+    }
 
 
 
 
-    
+
 }
 
 .slide-content {
     position: relative;
     transition: all 0.5s;
-
+    cursor: pointer;
 
 
     .slide-caption {
@@ -281,7 +334,7 @@ export default {
     .carousel-container:has(.slide-content:hover) {
 
 
-        .first-visible-slide .slide-content:hover {
+        .swiper-slide-visible.first-visible-slide .slide-content:hover {
             transform: translateX(15px) scale(108%);
 
         }

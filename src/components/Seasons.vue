@@ -1,15 +1,15 @@
 <template>
-    <div class="container p-0 my-3 rounded-3 border border-2 border-warning">
+    <div class="container p-0 my-3 border rounded-3 border-2 ms_border">
 
         <div :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }" id="seasons">
 
             <div class="accordion" id="accordionSeason">
-                <div class="accordion-item border-1 border-top-0 border-start-0 border-end-0 border-warning"
+                <div class="accordion-item border-0"
                     v-for="(season, index) in store.italianDetails.seasons" :key="index">
                     <div v-if="season.name != 'Speciali'">
                     <h2 class="accordion-header"
                         @click="HandleClickSeason(store.italianDetails.id, season.season_number)">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        <button class="accordion-button collapsed main-accordion" :class="index < store.italianDetails.seasons.length - 1 ? ' border-bottom-2 border border-top-0 border-start-0 border-end-0 ms_border' : ''" type="button" data-bs-toggle="collapse"
                             :data-bs-target="'#collapseSeason' + index" aria-expanded="true"
                             :aria-controls="'collapseSeason' + index">
                             {{ season.name }}
@@ -17,12 +17,12 @@
                     </h2>
                     <div :id="'collapseSeason' + index" class="accordion-collapse collapse"
                         data-bs-parent="#accordionSeason">
-                        <div class="accordion-body">
+                        <div class="accordion-body p-0 py-3">
                             <div class="accordion" :id="'accordionEpisode' + index" v-if="store.season">
-                                <div class="accordion-item" v-for="episode in store.season.episodes"
+                                <div class="accordion-item rounded-0 border-top-0 border-start-0 border-end-0" v-for="episode in store.season.episodes"
                                     :key="episode.episode_number">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
+                                        <button class="accordion-button rounded-0 collapsed" type="button"
                                             data-bs-toggle="collapse"
                                             :data-bs-target="'#collapseEpisode' + episode.episode_number"
                                             aria-expanded="true"
@@ -100,27 +100,26 @@ export default {
                 })
 
                 // Chiude tutti gli accordion
-                const buttons = document.querySelectorAll('.accordion-button');
-                buttons.forEach(accordion => {
-                    accordion.classList.add('collapsed');
-                });
+                setTimeout(()=> {
 
-                setTimeout(() => {
-                    const accordions = document.querySelectorAll('.accordion-collapse');
-                    accordions.forEach(accordion => {
-                        accordion.classList.remove('show');
-                    });
-
-                    this.maxH = 200;
-                    const seasonElem = document.getElementById('accordionSeason');
-
-                    if (seasonElem && seasonElem.offsetHeight > 200) {
-
-                        this.hasMaxHeight = true;
-                    } else {
-                        this.hasMaxHeight = false;
+                    const button = document.querySelector('.main-accordion:not(.collapsed)');
+                    console.log(button);
+                    
+                    if(button) {
+    
+                        button.click();
                     }
-                }, 500);
+    
+                        this.maxH = 200;
+                        const seasonAccordionElem = document.getElementById('accordionSeason');
+    
+                        if (seasonAccordionElem && seasonAccordionElem.offsetHeight > 200) {
+    
+                            this.hasMaxHeight = true;
+                        } else {
+                            this.hasMaxHeight = false;
+                        }
+                },500);
 
 
 
@@ -212,7 +211,7 @@ export default {
         }
 
         .accordion-button:not(.collapsed) {
-            background-color: var(--color-border);
+            background-color: var(--ms-warning);
             color: #1f1f1f;
             box-shadow: unset;
         }

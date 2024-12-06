@@ -1,7 +1,7 @@
 <template>
     <div class="container" id="details-container">
 
-        <div class="container my-3 rounded-3 border border-2 border-warning p-3">
+        <div class="container my-3 rounded-3 border border-2 ms_border p-3">
             <!-- genere -->
             <div class="row mb-3">
                 <div class="col d-flex gap-3">
@@ -9,7 +9,7 @@
 
                     <div class="d-flex gap-2 flex-wrap">
 
-                        <span class="badge bg-warning text-bg-warning d-flex align-items-center "
+                        <span class="badge bg-ms_warning text-bg-warning d-flex align-items-center "
                             v-for="genre in store.italianDetails.genres" :key="genre">
                             {{ genre.name }}
                         </span>
