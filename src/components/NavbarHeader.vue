@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg fixed-top" :class="{ 'navbar-scrolled': isScrolled || isMenuOpen }">
         <div class="container-fluid">
             <router-link :to="{ name: 'home' }">
-                <img src="../assets/wheretolook.png" class="logo" alt="">
+                <img src="../assets/wheretolook.png" class="logo me-2" alt="">
             </router-link>
             <!-- <div class="d-flex gap-2"> -->
 
@@ -74,7 +74,7 @@ export default {
 <style lang="scss" scoped>
 .logo {
     width: 50px;
-    filter: drop-shadow(1px 1px 0px white);
+
 }
 
 .nav-item {

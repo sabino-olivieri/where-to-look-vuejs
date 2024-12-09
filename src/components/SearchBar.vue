@@ -2,7 +2,7 @@
     <div class="search-container" :class="!isLarge ? 'hidden-container' : ''">
         <input type="text" v-model.trim="searchTerm" placeholder="Cerca un titolo" class="search-input" :class="!isLarge ? 'hidden-input' : 'p-1 ps-2'" @keypress.enter="submitSearch"  />
         <button @click="submitSearch" class="search-button bg-ms_warning">
-            <i class="fas fa-search tx-white"></i>
+            <i class="fas fa-search"></i>
         </button>
     </div>
 </template>
@@ -76,6 +76,7 @@ export default {
 .search-button {
     border: none;
     border-radius: 50%;
+    color: #1f1f1f;
     width: 38px;
     height: 38px;
     display: flex;

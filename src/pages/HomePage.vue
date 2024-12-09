@@ -4,7 +4,7 @@
 
     <BigCarousel :slides="store.show" v-if="store.show.shows" class="animate" />
     <MovieCarousel title="Film" :slides="store.movies.shows" v-if="store.movies.shows" class="animate" />
-    <MovieCarousel title="Serie" :slides="store.series.shows" v-if="store.series.shows" class="animate" />
+    <MovieCarousel title="Serie TV" :slides="store.series.shows" v-if="store.series.shows" class="animate" />
 
   </main>
 
