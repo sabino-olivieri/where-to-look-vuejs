@@ -118,6 +118,7 @@ export default {
         store.details = null;
         store.italianDetails = null;
         this.subscription = [];
+        this.free = [];
         this.rent = [];
         this.buy = [];
         this.exsist = false;
@@ -312,6 +313,7 @@ export default {
                 store.details = store.details && store.details.tmdbId && store.details.tmdbId != id ? null : store.details;
                 store.italianDetails = store.italianDetails && store.italianDetails.id && store.italianDetails.id != idMovieDB ? null : store.italianDetails;
                 this.subscription = [];
+                this.free = [];
                 this.rent = [];
                 this.buy = [];
                 this.exsist = false;
