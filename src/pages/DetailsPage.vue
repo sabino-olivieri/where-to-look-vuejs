@@ -63,7 +63,7 @@
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
             </div>
 
-            <Videos :video="video" class="animate" v-if="video" />
+            <Videos :video="video" v-if="video" class="animate"/>
 
             <Seasons v-if="store.italianDetails.seasons" class="animate" />
         </div>
@@ -111,8 +111,6 @@ export default {
             id: null,
             video: null
 
-
-
         }
     },
 
@@ -124,7 +122,6 @@ export default {
         this.buy = [];
         this.exsist = false;
         this.suggested = null;
-
 
     },
     beforeRouteLeave(to, from, next) {
@@ -257,9 +254,6 @@ export default {
 
             const stream = await CallApi(`https://api.themoviedb.org/3/${id}/watch/providers`, {}, store.objPramsMovieDB)
 
-
-
-
             const streamTypes = {
                 ads: this.free,
                 buy: this.buy,
@@ -268,7 +262,6 @@ export default {
             };
 
             Object.entries(streamTypes).forEach(([type, targetArray]) => {
-
 
                 if (stream.results && stream.results.IT && stream.results.IT[type]) {
 
@@ -290,7 +283,7 @@ export default {
                 this.suggested = null;
             }
 
-            this.callVideos(id);
+            await this.callVideos(id);
 
             ScrollTop();
 
@@ -315,7 +308,6 @@ export default {
                 
                 const id = this.$route.params.id;
                 const idMovieDB = id.split('/')[1];
-
                 
                 store.details = store.details && store.details.tmdbId && store.details.tmdbId != id ? null : store.details;
                 store.italianDetails = store.italianDetails && store.italianDetails.id && store.italianDetails.id != idMovieDB ? null : store.italianDetails;
@@ -326,7 +318,10 @@ export default {
                 this.suggested = null;
                 this.video = null;
                 await this.createPage();
-                AnimateOnScroll();
+                if(!this.video) {
+
+                    AnimateOnScroll();
+                }
                 store.isPageReady = true;
 
             },
@@ -375,6 +370,8 @@ export default {
 
     h1 {
         width: 40%;
+        text-shadow: 2px 2px 10px #1f1f1f,
+        -2px -2px 10px #1f1f1f;
     }
 }
 

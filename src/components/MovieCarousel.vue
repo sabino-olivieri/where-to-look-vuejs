@@ -23,7 +23,7 @@
                 slidesPerView: 6.1,
                 slidesPerGroup: 6
             }
-        }" :virtual="true" :lazy="true" :space-between="15" :loop="false" :navigation="true" :autoplay="{
+        }" :virtual="true" :lazy="true" :space-between="15" :loop="false"  :navigation="true" :autoplay="{
             delay: 10000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true
@@ -211,7 +211,6 @@ export default {
 
     .swiper-wrapper .swiper-slide-visible:last-of-type .slide-content:hover {
         transform: translateX(-30px) scale(120%);
-        /* Aggiungi l'effetto hover */
         z-index: 9999;
     }
 }
@@ -300,13 +299,12 @@ export default {
     height: calc(100% - 6rem);
     opacity: 0;
     overflow: hidden;
-    width: 10px;
+    width: 15px;
     top: 50%;
     margin: 0;
     transform: translateY(-50%);
-    // padding: 0 20px;
     color: white;
-    // transition: opacity 0.3s ease;
+
 }
 
 :deep(.swiper-button-prev) {

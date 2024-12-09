@@ -18,7 +18,7 @@
                     <div class="slide-image d-flex align-items-center justify-content-center" v-if="!slideIndex[index]">
                         <Loader/>
                     </div>
-                    <div class="slide-caption d-flex justify-content-between align-items-center">
+                    <div class="slide-caption px-3 d-flex justify-content-between align-items-center">
                         <h3 :class="{ 'title-animation': activeIndex === index }">{{ slide.title }}</h3>
 
                         <div class="d-flex gap-2">
@@ -139,12 +139,12 @@ export default {
     right: 0;
     background: linear-gradient(0deg, #1f1f1f 15%, #1f1f1f00 100%);
     color: white;
-    padding: 40px 30PX;
+    padding-bottom: 100px;
 }
 
 .slide-caption h3 {
     margin-bottom: 0;
-    width: 30%;
+    width: 40%;
     font-size: 24px;
     opacity: 0;
     transform: translateY(50px);
@@ -229,8 +229,14 @@ export default {
     display: none;
 }
 
+.slide-caption {
+    padding-bottom: 30px;
+}
+
 .slide-caption h3 {
     width: 90%;
+    text-shadow: 2px 2px 10px #1f1f1f,
+    -2px -2px 10px #1f1f1f;
 }
 
 }

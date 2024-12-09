@@ -8,9 +8,14 @@
 </template>
 
 <script>
+import AnimateOnScroll from '../functions/AnimateOnScroll';
+
     export default {
         props: {
             video: Object
+        },
+        mounted() {
+            AnimateOnScroll();
         }
     }
 </script>

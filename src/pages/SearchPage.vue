@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid mt-5 py-4" :class="!store.isPageReady ? 'hidden-animation' : ''">
         <div class="row g-3" v-if="results && results.results && results.results.length > 0">
-            <h5 class="mb-0">Risultati di ricerca per: <span class="text-warning">{{ title }}</span></h5>
+            <h5 class="mb-0">Risultati di ricerca per: <span class="badge text-bg-warning">{{ title }}</span></h5>
             <div class="col-12 col-md-6 col-lg-4 animate" v-for="result, index in results.results" :key="result"
                 @click="italianDetailsChange(result)">
 
