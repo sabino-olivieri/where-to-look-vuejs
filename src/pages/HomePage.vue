@@ -81,6 +81,16 @@ export default {
       }
 
     }
+
+    store.isPageReady = true;
+  },
+  watch: {
+    // Quando isPageReady diventa true, chiama AnimateOnScroll
+    'store.isPageReady': function (newValue) {
+      if (newValue) {
+        AnimateOnScroll();
+      }
+    }
   },
 
   methods: {
@@ -96,10 +106,6 @@ export default {
       storeArray.shows = array;
 
     }
-  },
-  mounted() {
-    AnimateOnScroll();
-    store.isPageReady = true;
   },
   beforeRouteLeave(to, from, next) {
         store.isPageReady = false;

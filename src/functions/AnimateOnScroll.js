@@ -6,7 +6,8 @@ export default function AnimateOnScroll() {
     const elements = document.querySelectorAll(".animate");
 
     elements.forEach((element) => {
-
+            console.log(element);
+            
             animateElement(element);
         
     });
@@ -16,7 +17,7 @@ export default function AnimateOnScroll() {
         const defaultOptions = {
             scrollTrigger: {
                 trigger: element,
-                start: "top 80%",
+                start: "top 90%",
                 end: "bottom 20%",
                 toggleActions: "play none none reverse",
             },
