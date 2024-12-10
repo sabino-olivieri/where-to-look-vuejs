@@ -126,7 +126,6 @@ export default {
 
     },
     beforeRouteLeave(to, from, next) {
-        console.log('route leave');
         
         store.isPageReady = false;
         
@@ -392,5 +391,12 @@ main {
         max-width: 100%;
 
     }
+
+    .ms_title {
+
+    h1 {
+        width: auto;
+    }
+}
 }
 </style>

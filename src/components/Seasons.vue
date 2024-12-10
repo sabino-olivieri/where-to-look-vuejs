@@ -1,7 +1,7 @@
 <template>
     <div class="container p-0 my-3 border rounded-3 border-2 ms_border">
 
-        <div :class="{ expanded: isExpanded }" :style="{ maxHeight: `${maxH}px` }" id="seasons">
+        <div :style="{ maxHeight: `${maxH}px` }" id="seasons">
 
             <div class="accordion" id="accordionSeason">
                 <div class="accordion-item border-0"
@@ -90,7 +90,7 @@ export default {
             this.isExpanded = !this.isExpanded;
             
             if (!this.isExpanded) {
-                
+
                 const seasonElem = document.querySelector('#seasons');                       
                 this.seasonTopPosition = seasonElem.getBoundingClientRect().top + window.scrollY - 100;
 
@@ -101,20 +101,20 @@ export default {
 
                 // Chiude tutti gli accordion
                 setTimeout(()=> {
-
+                    
                     const button = document.querySelector('.main-accordion:not(.collapsed)');
-                    console.log(button);
                     
                     if(button) {
-    
+                        
                         button.click();
                     }
-    
-                        this.maxH = 200;
+                    
+                    this.maxH = 200;
+
                         const seasonAccordionElem = document.getElementById('accordionSeason');
     
                         if (seasonAccordionElem && seasonAccordionElem.offsetHeight > 200) {
-    
+                            
                             this.hasMaxHeight = true;
                         } else {
                             this.hasMaxHeight = false;
@@ -134,7 +134,7 @@ export default {
             this.resizeObserver = new ResizeObserver(entries => {
                 for (const entry of entries) {
                     if (this.isExpanded) {
-                        this.maxH = entry.contentRect.height;
+                        this.maxH = entry.contentRect.height;                        
                         this.maxH > 200 ? this.hasMaxHeight = true : this.hasMaxHeight = false;
                     }
                 }

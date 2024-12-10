@@ -34,7 +34,7 @@
             </div>
 
             <!-- cast -->
-            <div class="row gap-2 flex-nowrap overflow-x-scroll py-2 px-3" >
+            <div class="row gap-2 flex-nowrap overflow-x-scroll py-2 px-3" v-if="actors && actors.length > 0">
 
                 <div class="text-center p-0 rounded-3 ms_actors" v-for="actor, index in actors" :key="actor">
                     <img :src="getImagePath(actor.profile_path)" class="rounded-top-3 mb-1 ms_img" alt=""
