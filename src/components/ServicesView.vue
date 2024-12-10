@@ -10,7 +10,7 @@
                         :style="{ backgroundColor: stream.service.themeColorCode ?? 'transparent' }">
                         <img :src="stream.service.imageSet.whiteImage" class="rounded-3" alt="">
                     </div>
-                    <span class="price" v-if="stream.price">{{ stream.quality.toUpperCase() }} {{ stream.price.amount ?
+                    <span class="price">{{ stream.quality ? stream.quality.toUpperCase() : '' }} {{stream.price && stream.price.amount ?
                         stream.price.amount + ' €' : ' Prezzo N/D' }}</span>
                 </a>
             </div>
