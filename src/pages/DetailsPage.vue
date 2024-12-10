@@ -34,16 +34,12 @@
         </div>
 
         <!-- descrizione -->
-        <div class="container my-3 animate" v-if="store.italianDetails.overview != ''">
-
-            <p>{{ store.italianDetails.overview }}</p>
-
-        </div>
-
         <div class="container">
 
-            <div class="container my-3 rounded-3 border border-2 ms_border animate" id="service-container">
-                <div class="text-end" v-if="exsist">
+            <p class="my-3 animate " v-if="store.italianDetails.overview != ''">{{ store.italianDetails.overview }}</p>
+
+            <div class="p-2 my-3 rounded-3 border border-2 ms_border animate" id="service-container">
+                <div class="text-end" v-if="serviceExsist">
 
                     <!-- free -->
                     <ServicesView :title="'gratuito'" :arrStream="free" />
@@ -63,7 +59,7 @@
                 <h4 class="m-0 p-4 text-center" v-else>Nessun servizio disponibile</h4>
             </div>
 
-            <Videos :video="video" v-if="video" class="animate"/>
+            <Videos :video="video" v-if="video" class="animate" />
 
             <Seasons v-if="store.italianDetails.seasons" class="animate" />
         </div>
@@ -75,6 +71,7 @@
 
 
     </main>
+    
     <div v-if="!store.isPageReady" class="d-flex justify-content-center align-items-center vh-100">
         <Loader />
     </div>
@@ -105,7 +102,7 @@ export default {
             subscription: [],
             rent: [],
             buy: [],
-            exsist: false,
+            serviceExsist: false,
             suggested: null,
             isLoaded: false,
             id: null,
@@ -117,18 +114,13 @@ export default {
     beforeUnmount() {
         store.details = null;
         store.italianDetails = null;
-        this.subscription = [];
-        this.free = [];
-        this.rent = [];
-        this.buy = [];
-        this.exsist = false;
-        this.suggested = null;
+        this.resetArray()
 
     },
     beforeRouteLeave(to, from, next) {
-        
+
         store.isPageReady = false;
-        
+
         setTimeout(() => {
             next();
         }, 500);
@@ -149,8 +141,10 @@ export default {
             }
         },
         pushSub(service) {
+            // controllo se nell'array subscription ci sia un servizio con lo stesso id
             const exsist = this.subscription.some(obj => obj.id === service.id);
 
+            // se non esiste già lo metto nell'array
             if (!exsist) {
                 this.subscription.push(service);
             }
@@ -169,7 +163,7 @@ export default {
                 return name === providerName;
             });
         },
-        createServiceObject(service, additionalFields = {}) {
+        createServiceObject(service) {
             return {
                 service: {
                     id: service.provider_id,
@@ -178,7 +172,6 @@ export default {
                     },
                     name: service.provider_name
                 },
-                ...additionalFields
             };
         },
         async callVideos(id) {
@@ -210,7 +203,7 @@ export default {
 
             }
 
-            // movieofthenight
+            // streaming-availability
             if (!store.details) {
 
                 const resp = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
@@ -218,41 +211,58 @@ export default {
                 })
                 if (resp) {
                     store.details = resp;
-                } else if (!store.details) {
+                }   // Se ho errore nella chiamata streaming-availability modifico la risposta di themoviedb
+                else if (!store.details) {
 
                     store.details = await TransformObject(store.italianDetails);
                 }
 
             }
 
-            // inserire controllo se non esiste il contenuto
+            // smisto le opzioni di streaming di store.details negli array di appartenenza
             if (store.details && store.details.streamingOptions.it) {
 
-                await store.details.streamingOptions.it.forEach(service => {
-                    switch (service.type) {
+                this.createServiceArray();
 
-                        case "subscription":
-                            this.pushSub(service);
-                            this.exsist = true;
-                            break;
-
-                        case "buy":
-                            this.buy.push(service);
-                            this.exsist = true;
-                            break;
-
-                        case "rent":
-                            this.rent.push(service);
-                            this.exsist = true;
-                            break;
-
-                        default:
-                            break;
-                    }
-                });
             }
 
-            const stream = await CallApi(`https://api.themoviedb.org/3/${id}/watch/providers`, {}, store.objPramsMovieDB)
+            await this.addServiceMoviedb();
+
+            await this.addSuggested();
+
+            await this.callVideos(id);
+
+            ScrollTop();
+
+        },
+
+        createServiceArray() {
+            store.details.streamingOptions.it.forEach(service => {
+                switch (service.type) {
+
+                    case "subscription":
+                        this.pushSub(service);
+                        this.serviceExsist = true;
+                        break;
+
+                    case "buy":
+                        this.buy.push(service);
+                        this.serviceExsist = true;
+                        break;
+
+                    case "rent":
+                        this.rent.push(service);
+                        this.serviceExsist = true;
+                        break;
+
+                    default:
+                        break;
+                }
+            });
+        },
+
+        async addServiceMoviedb() {
+            const stream = await CallApi(`https://api.themoviedb.org/3/${this.id}/watch/providers`, {}, store.objPramsMovieDB)
 
             const streamTypes = {
                 ads: this.free,
@@ -261,32 +271,32 @@ export default {
                 flatrate: this.subscription
             };
 
+
+            // restituisce un array di array composto da chiave + contenuto della chiave
             Object.entries(streamTypes).forEach(([type, targetArray]) => {
 
+                // controllo se esite il tipo nella risposta di themoviedb
                 if (stream.results && stream.results.IT && stream.results.IT[type]) {
 
+                    // analizzo tutti i tipi della risposta
                     stream.results.IT[type].forEach(service => {
+
+                        // controllo se il servizio è già presente nell'array di streaming-availability
                         if (!this.isServiceInArray(service, targetArray)) {
 
-                            const additionalFields = type === 'buy' || type === 'rent'
-                                ? { type: "", quality: "", price: { amount: "" } }
-                                : {};
                             this.exsist = true;
-                            targetArray.push(this.createServiceObject(service, additionalFields));
+                            targetArray.push(this.createServiceObject(service));
                         }
                     });
                 }
             });
+        },
 
-            this.suggested = await CallApi(`https://api.themoviedb.org/3/${id}/recommendations`, {}, store.objPramsMovieDB)
+        async addSuggested() {
+            this.suggested = await CallApi(`https://api.themoviedb.org/3/${this.id}/recommendations`, {}, store.objPramsMovieDB)
             if (this.suggested.results.length === 0) {
                 this.suggested = null;
             }
-
-            await this.callVideos(id);
-
-            ScrollTop();
-
         },
 
         scrollTo(whereScroll) {
@@ -298,6 +308,15 @@ export default {
                 const scrollPosition = elementPosition - navbarHeight;
                 window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
             }
+        },
+        resetArray() {
+            this.subscription = [];
+            this.free = [];
+            this.rent = [];
+            this.buy = [];
+            this.exsist = false;
+            this.suggested = null;
+            this.video = null;
         }
 
     },
@@ -305,21 +324,18 @@ export default {
         '$route.query': {
             async handler(newQuery, oldQuery) {
                 store.isPageReady = false;
-                
+
                 const id = this.$route.params.id;
                 const idMovieDB = id.split('/')[1];
-                
+
                 store.details = store.details && store.details.tmdbId && store.details.tmdbId != id ? null : store.details;
                 store.italianDetails = store.italianDetails && store.italianDetails.id && store.italianDetails.id != idMovieDB ? null : store.italianDetails;
-                this.subscription = [];
-                this.free = [];
-                this.rent = [];
-                this.buy = [];
-                this.exsist = false;
-                this.suggested = null;
-                this.video = null;
+
+                this.resetArray();
+
                 await this.createPage();
-                if(!this.video) {
+
+                if (!this.video) {
 
                     AnimateOnScroll();
                 }
@@ -372,7 +388,7 @@ export default {
     h1 {
         width: 40%;
         text-shadow: 2px 2px 10px #1f1f1f,
-        -2px -2px 10px #1f1f1f;
+            -2px -2px 10px #1f1f1f;
     }
 }
 
@@ -394,9 +410,9 @@ main {
 
     .ms_title {
 
-    h1 {
-        width: auto;
+        h1 {
+            width: auto;
+        }
     }
-}
 }
 </style>
