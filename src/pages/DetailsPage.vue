@@ -4,9 +4,6 @@
         <div
             class="hero d-flex justify-content-center justify-content-md-end align-items-center position-relative animate">
 
-            <div class="overlay">
-
-            </div>
 
             <div class="ms_img d-flex justify-content-center align-items-center">
                 <img :src="getImagePath(store.italianDetails.backdrop_path)" alt="" class=" img-fluid"
@@ -71,7 +68,7 @@
 
 
     </main>
-    
+
     <div v-if="!store.isPageReady" class="d-flex justify-content-center align-items-center vh-100">
         <Loader />
     </div>
@@ -350,8 +347,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.overlay {
+.hero::after {
+    content: '';
     position: absolute;
+    z-index: 2;
     width: 100%;
     height: 100%;
     top: 0;
@@ -376,6 +375,7 @@ export default {
 
 .ms_title {
     position: absolute;
+    z-index: 3;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -397,15 +397,12 @@ main {
 }
 
 @media screen and (max-width: 768px) {
-    .overlay {
+    .hero::after {
         opacity: 0;
     }
 
     .ms_img {
-        min-height: 350px;
-        aspect-ratio: 16/5;
         max-width: 100%;
-
     }
 
     .ms_title {
