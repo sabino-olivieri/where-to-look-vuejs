@@ -1,5 +1,5 @@
 <template>
-
+  <!-- se la pagina non è pronta la nasconde -->
   <main :class="!store.isPageReady ? 'hidden-animation' : ''">
 
     <BigCarousel :slides="store.show" v-if="store.show.shows" class="animate" />
@@ -7,6 +7,11 @@
     <MovieCarousel title="Serie TV" :slides="store.series.shows" v-if="store.series.shows" class="animate" />
 
   </main>
+
+  <div class=" vh-100 d-flex justify-content-center align-items-center" v-if="!store.isPageReady">
+    <Loader/>
+  </div>
+  
 
 </template>
 
@@ -18,6 +23,7 @@ import TransformObject from '../functions/TransformObject';
 import { store } from '../store';
 import AnimateOnScroll from '../functions/AnimateOnScroll';
 import ScrollTop from '../functions/ScrollTop';
+import Loader from '../components/Loader.vue';
 
 export default {
   data() {
@@ -25,63 +31,40 @@ export default {
       store
     }
   },
-  components: { BigCarousel, MovieCarousel },
+  components: { BigCarousel, MovieCarousel, Loader },
 
   async created() {
 
     ScrollTop();
 
+    // Parametri standard per streaming-availability
     const params = {
       'country': 'it',
       'order_by': 'popularity_1week',
     };
 
+    // Se non ci sono già gli show fa la chiamata 
     if (!store.show.shows) {
 
-      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, params);
-      if (resp) {
-        store.show = resp;
-      } else if (!store.show.shows) {
-        await this.CallDefault('all', store.show)
-
-      }
-
+      await this.CallStreamingAvailability(params, store.show);
 
     }
 
+    // Se non ci sono già i film fa la chiamata 
     if (!store.movies.shows) {
 
-      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
-        'country': 'it',
-        'order_by': 'popularity_1week',
-        'show_type': 'movie'
-      });
+      await this.CallStreamingAvailability({ ...params, 'show_type': 'movie' }, store.movies, 'movie');
 
-      if (resp) {
-        store.movies = resp;
-      } else if (!store.movies.shows) {
-        await this.CallDefault('movie', store.movies)
-
-      }
     }
 
+    // Se non ci sono già le serie fa la chiamata 
     if (!store.series.shows) {
 
-      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, {
-        'country': 'it',
-        'order_by': 'popularity_1week',
-        'show_type': 'series'
-      });
-
-      if (resp) {
-        store.series = resp;
-      } else if (!store.series.shows) {
-        await this.CallDefault('tv', store.series)
-
-      }
+      await this.CallStreamingAvailability({ ...params, 'show_type': 'series' }, store.series, 'tv');
 
     }
 
+    // dopo aver fatto tutto la pagina è pronta 
     store.isPageReady = true;
   },
   watch: {
@@ -94,6 +77,22 @@ export default {
   },
 
   methods: {
+    async CallStreamingAvailability(params, storeArray, showType = 'all') {
+
+      const resp = await CallApi('https://streaming-availability.p.rapidapi.com/shows/search/filters', store.header, params);
+
+      if (resp && resp.shows) {
+        // Aggiorna direttamente la proprietà shows di storeArray
+        storeArray.shows = resp.shows;
+      } // Se la chiamata ha avuto errori e quindi non ci sono gli shows fa la chiama di default a themoviedb
+      else if (!storeArray.shows) {
+
+        await this.CallDefault(showType, storeArray)
+
+      }
+
+    },
+
     async CallDefault(search, storeArray) {
       const resp = await CallApi(`https://api.themoviedb.org/3/trending/${search}/week`, {}, store.objPramsMovieDB);
 
@@ -108,11 +107,12 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-        store.isPageReady = false;
-        setTimeout(() => {
-            next();
-        },500);
-    },
+    // prima di cambiare rotta nasconde la pagina per l'animazione
+    store.isPageReady = false;
+    setTimeout(() => {
+      next();
+    }, 500);
+  },
 
 }
 

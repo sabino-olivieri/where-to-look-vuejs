@@ -6,7 +6,6 @@ export default function AnimateOnScroll() {
     const elements = document.querySelectorAll(".animate");
 
     elements.forEach((element) => {
-            console.log(element);
             
             animateElement(element);
         
