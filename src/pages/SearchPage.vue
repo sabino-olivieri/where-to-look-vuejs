@@ -61,8 +61,6 @@ export default {
             store,
         }
     },
-
-
     beforeUnmount() {
         this.results = [];
     },
@@ -169,6 +167,7 @@ export default {
         -webkit-box-orient: vertical;
         /* Imposta l'orientamento delle linee */
         -webkit-line-clamp: 5;
+        line-clamp: 5;
         /* Numero massimo di linee visibili */
         text-overflow: ellipsis;
         /* Mostra i puntini di sospensione */

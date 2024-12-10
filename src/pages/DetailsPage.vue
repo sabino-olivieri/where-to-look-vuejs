@@ -281,7 +281,7 @@ export default {
                         // controllo se il servizio è già presente nell'array di streaming-availability
                         if (!this.isServiceInArray(service, targetArray)) {
 
-                            this.exsist = true;
+                            this.serviceExsist = true;
                             targetArray.push(this.createServiceObject(service));
                         }
                     });
