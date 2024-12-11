@@ -1,8 +1,7 @@
 <template>
     <main :class="!store.isPageReady ? 'hidden-animation' : ''" v-if="store.details && store.italianDetails">
 
-        <div
-            class="hero d-flex justify-content-center justify-content-md-end align-items-center position-relative animate">
+        <div class="hero d-flex justify-content-center justify-content-md-end align-items-center position-relative animate">
 
 
             <div class="ms_img d-flex justify-content-center align-items-center">
@@ -59,11 +58,13 @@
             <Videos :video="video" v-if="video" class="animate" />
 
             <Seasons v-if="store.italianDetails.seasons" class="animate" />
+
+            <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate" />
+
         </div>
 
-        <DetailsComponent :id="id" v-if="store.italianDetails && id" class="animate" />
+        <MovieCarousel title="Suggeriti" :slides="suggested.results" v-if="suggested" class="animate mt-5" />
 
-        <MovieCarousel title="Suggeriti" :slides="suggested.results" v-if="suggested" class="animate" />
 
 
 
@@ -201,7 +202,7 @@ export default {
             }
 
             // streaming-availability
-            if (!store.details) {
+            if (!store.details && store.italianDetails) {
 
                 const resp = await CallApi(`https://streaming-availability.p.rapidapi.com/shows/${id}`, store.header, {
                     country: 'it'
@@ -223,11 +224,16 @@ export default {
 
             }
 
-            await this.addServiceMoviedb();
+            if (store.italianDetails) {
 
-            await this.addSuggested();
+                await this.addServiceMoviedb();
 
-            await this.callVideos(id);
+                await this.addSuggested();
+
+                await this.callVideos(id);
+
+            }
+
 
             ScrollTop();
 
@@ -331,6 +337,15 @@ export default {
                 this.resetArray();
 
                 await this.createPage();
+
+                if (!store.details && !store.italianDetails) {
+
+                    store.isPageReady = false;
+
+                        this.$router.push({
+                            name: 'errorPage',
+                        });
+                }
 
                 if (!this.video) {
 

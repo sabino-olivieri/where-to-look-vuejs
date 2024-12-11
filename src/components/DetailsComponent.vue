@@ -1,7 +1,6 @@
 <template>
-    <div class="container" id="details-container">
 
-        <div class="container my-3 rounded-3 border border-2 ms_border p-3">
+        <div class="my-3 rounded-3 border border-2 ms_border p-3" id="details-container">
             <!-- genere -->
             <div class="row mb-3">
                 <div class="col d-flex gap-3">
@@ -50,7 +49,7 @@
                 </div>
             </div>
         </div>
-    </div>
+
 </template>
 
 <script>
