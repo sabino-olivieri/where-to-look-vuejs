@@ -364,11 +364,11 @@ export default {
     overflow: hidden;
     max-width: 85%;
 
-
     img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center;
     }
 
 }
@@ -403,6 +403,7 @@ main {
 
     .ms_img {
         max-width: 100%;
+        min-height: 300px;
     }
 
     .ms_title {
