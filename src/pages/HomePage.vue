@@ -8,7 +8,7 @@
 
   </main>
 
-  <div class=" vh-100 d-flex justify-content-center align-items-center" v-if="!store.isPageReady">
+  <div class=" vh-100 d-flex justify-content-center align-items-center" v-if="!store.isPageReady && !store.show.shows">
     <Loader/>
   </div>
   
